@@ -10,8 +10,9 @@ Everything starts out all fine. _It's all fun until you start to scale_. Once yo
 - Removes a lot of the unnecessary boilerplate
 
 # Installation
+
 <!-- prettier-ignore -->
-```
+```JSX
 // With npm
 npm i redux-sugar
 
