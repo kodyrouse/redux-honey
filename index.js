@@ -16,18 +16,18 @@ const defaultGetStateOptions = {
 
 
 
-export const sugarcoatStore = injectedStore => {
+export const createHoneyPot = injectedStore => {
 
 	if (!canInjectStore(injectedStore))
-		return console.warn(`Redux-Sugar: \n Could not call sugarcoatStore() - passed store is not a redux store.`);
+		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - passed store is not a redux store.`);
 
 	store = injectedStore;
 }
 
-export const addSugar = (stateKey, initialState) => {
+export const addHoney = (stateKey, initialState) => {
 
 	if (!isUniqueAndValidStateKey(stateKey))
-		return console.warn(`Redux-Sugar: \n Unable to call addSugar() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
+		return console.warn(`Redux-Honey: \n Unable to call addHoney() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
 
 	addStateKeyToStateKeys(stateKey);
 	addInitialStateToInitialStates(stateKey, initialState);
@@ -97,8 +97,8 @@ const createGetState = stateKey => (string, options = defaultGetStateOptions) =>
 		return (options.returnOriginal) ? state : cloneState(state);
 
 	} catch(error) {
-		console.warn(`Redux-Sugar: \n Could not getState() for the given string "${string}"`);
-		console.warn(`Redux-Sugar: \n ${error}`);
+		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}"`);
+		console.warn(`Redux-Honey: \n ${error}`);
 	}
 }
 
@@ -144,7 +144,7 @@ const canInjectStore = store => (
 )
 
 const handleStoreNotSetError = uncalledMethodName => {
-	console.warn(`Redux-Sugar: \n Unable to call ${uncalledMethodName} - please ensure you pass your store into sugarcoatStore() correctly when instantiating your store.`);
+	console.warn(`Redux-Honey: \n Unable to call ${uncalledMethodName} - please ensure you pass your store into createHoneyPot() correctly when instantiating your store.`);
 }
 
 const getPropertyKeyAndValue = key => {
@@ -241,5 +241,5 @@ const getArrayItemByPropertKey = (state, key) => {
 }
 
 const handleGivenInvalidPayloadKeys = (invalidKeysInPayload, payload, stateKey) => {
-	console.warn(`Redux-Sugar: \n Could not call updateState() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addSugar().`);
+	console.warn(`Redux-Honey: \n Could not call updateState() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 }

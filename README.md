@@ -1,10 +1,10 @@
-# 🍬 Redux-Sugar 🍬
+# 🍯 Redux-Honey 🍯
 A simple, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does! As your application starts to scale though, your files become *littered* with unnecessary boilerplate code and complicated craziness. It makes it difficult to maintain and read, which hurts my soul. This is where ```redux-sugar``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does! As your application starts to scale though, your files become *littered* with unnecessary boilerplate code and complicated craziness. It makes it difficult to maintain and read, which hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
 
-# Benefits To Using Redux-Sugar
+# Benefits To Using Redux-Honey
 - Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
 - No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements
 - Built-in abilities to ```resetState``` and ```resetStoreToInitialState```
@@ -12,39 +12,39 @@ In a lot of ways, redux is *fantastic* at what it does! As your application star
 
 # Installation
 
-```
+```js
 // With npm
-npm i redux-sugar
+npm i redux-honey
 
 // Or with yarn
-yarn add redux-sugar
+yarn add redux-honey
 ```
 
 # Usage
 
 ## Initialize
-Pass your store into ```sugarcoatStore``` at creation:
+Pass your store into ```createHoneyPot``` at creation:
 
-```
+```js
 import { createStore, combineReducers } from "redux";
-import { sugarcoatStore } from "redux-sugar";
-import funWithReduxSugarReducer from "./funWithReduxSugarReducer";
+import { createHoneyPot } from "redux-honey";
+import funWithReduxHoneyReducer from "./funWithReduxHoneyReducer";
 
 const combinedReducers = combineReducers({
- funWithReduxSugarReducer
+ funWithReduxHoneyReducer
 });
 
 const store = createStore(combinedReducers);
 
-// Pass your store into sugarcoatStore to add the magic
-sugarcoatStore(store);
+// Pass your store into createHoneyPot to add the magic
+createHoneyPot(store);
 
 export default store;
 ```
 
-## addSugar(stateKey, initialState)
+## addHoney(stateKey, initialState)
 
-Call ```addSugar(stateKey, initialState)``` to create a new piece of state
+Call ```addHoney(stateKey, initialState)``` to create a new piece of state
 
 ### Arguments
 - **stateKey** *(required)* - unique string. The file/reducer name is recommended for debugging purposes
@@ -54,22 +54,22 @@ Call ```addSugar(stateKey, initialState)``` to create a new piece of state
 - **reducer** - *(function)* - never called directly. Export out of the file to pass into *combineReducers()*
 - **updateState** - *(function)* - used to update *this* piece of state only
 - **getState** - *(function)* - used to get state from *this* piece of state only
-- **resetState** - *(function)* - used to reset *this* piece of state back to the original *initialState* that was passed when calling ```addSugar()```
+- **resetState** - *(function)* - used to reset *this* piece of state back to the original *initialState* that was passed when calling ```addHoney()```
 
 Example:
-```
-// This is funWithReduxSugarReducer.js
+```js
+// This is funWithReduxHoneyReducer.js
 
-import { addSugar } from "redux-sugar";
+import { addHoney } from "redux-honey";
 
 // The initialState for this piece of state
 const initialState = {
  loveProgramming: false,
- favPlugin: "redux-sugar"
+ favPlugin: "redux-honey"
 };
 
-// addSugar() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+// addHoney() returns an object with its reducer, updateState, getState, and resetState
+const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 ```
 
@@ -85,19 +85,19 @@ Call ```updateState(payload)``` to update its state
 
 Example:
 
-```
-// This is funWithReduxSugarReducer.js
+```js
+// This is funWithReduxHoneyReducer.js
 
-import { addSugar } from "redux-sugar";
+import { addHoney } from "redux-honey";
 
 // The initialState for this piece of state
 const initialState = {
  loveProgramming: false,
- favPlugin: "redux-sugar",
+ favPlugin: "redux-honey",
  isStateUpdated: false
 };
 
-const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 // Called in a react component
@@ -111,9 +111,9 @@ export const updateFavPlugin = selectedFavPlugin => {
 #### Side Note
 As a safety check, you can't pass key-value pairs that didn't exist on the initialState when calling ```updateState()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬 when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```;
 
-```
+```js
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
-updateState({ favPlugin: "redux-sugar", isGoingToFailToUpdate: true });
+updateState({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
 ```
 
 ## getState(keysString, options)
@@ -129,7 +129,7 @@ Call ```getState(keysString, options)``` to retrieve what you need from its stat
 
 This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
 
-```
+```js
 // An example state structure
 {
  name: "John Smith",
@@ -158,7 +158,7 @@ One of the (many!) cool aspects about ```getState``` is that, by default, it ret
 
 **returnOriginal** - defaults to `false`. Set to `true` when calling `getState` to return the original, uncloned copy of your state
 
-```
+```js
 // An example state structure
 {
  name: "John Smith",
@@ -194,13 +194,13 @@ Call ```resetState()``` to set the state piece back to the passed initialState p
 
 Example:
 
-```
-import { addSugar, wait } from "redux-sugar";
+```js
+import { addHoney, wait } from "redux-honey";
 
 
 
-// addSugar() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+// addHoney() returns an object with its reducer, updateState, getState, and resetState
+const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 
@@ -214,7 +214,7 @@ export const showFunStuffAction = async () => {
  // Waits 500ms before continuing. Described in greater detail below
  await wait(500);
 
- // Resets this piece of state back to what it was when addSugar() was called
+ // Resets this piece of state back to what it was when addHoney() was called
  resetState();
 }
 ```
@@ -244,13 +244,13 @@ Call ```resetStoreToInitialState()``` when you need to reset all states in your 
 
 Example:
 
-```
-import { addSugar, resetStoreToInitialState } from "redux-sugar";
+```js
+import { addHoney, resetStoreToInitialState } from "redux-honey";
 
 
 
-// addSugar() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+// addHoney() returns an object with its reducer, updateState, getState, and resetState
+const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 
@@ -266,6 +266,7 @@ export const showFunStuffAction = async () => {
  // Resets entire store back to all passed initialStates
  resetStoreToInitialState();
 }
+```
 
 ## License 
 
