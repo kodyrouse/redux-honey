@@ -1,18 +1,17 @@
-# Redux-Sugar 🍬
-A simple, lightweight, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
+# 🍬 Redux-Sugar 🍬
+A simple, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does! The main issue with redux is all that dreaded *boilerplate*. It makes your files unnecessarily large / complicated, hurts my soul, and much more difficult to maintain! This is where ```redux-sugar``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does! As your application starts to scale though, your files become *littered* with unnecessary boilerplate code and complicated craziness. It makes it difficult to maintain and read, which hurts my soul. This is where ```redux-sugar``` comes to the rescue 🙌
 
-## Benefits To Using Redux-Sugar
+# Benefits To Using Redux-Sugar
 - Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
 - No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements
 - Built-in abilities to ```resetState``` and ```resetStoreToInitialState```
-- Allows for simplier use of async updates with ```wait()```, removing the need for middleware like ```redux-thunk```
+- Allows a simplier use of async updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
 # Installation
 
-<!-- prettier-ignore -->
 ```
 // With npm
 npm i redux-sugar
@@ -121,7 +120,7 @@ Call ```getState()``` to retrieve what you need from its state. Pass no keysStri
 
 ### Arguments
 - **keys** *(optional)* - string - space-separated set of keys. If you want to get the entire state, you don't need to pass anything
-- **options** *(optional)* - object - a set of options when calling ```getState()```. Options are defined [here - Link](# Options)
+- **options** *(optional)* - object - a set of options when calling ```getState()```. Options are defined [Link-here](### Options)
 
 ### Returns
 - the piece of state that matches the passed keysString
@@ -153,7 +152,7 @@ getState("bodyDetails athletics sportingAbilities");
 
 It's *that* simple! 🎉
 
-One of the (many!) cool aspects about ```getState``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you! *(If you want to return the original object or array, checkout [options - Link](# Options)).*
+One of the (many!) cool aspects about ```getState``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you! *(If you want to return the original object or array, checkout [Link-options](### Options)*
 
 
 ### Options
