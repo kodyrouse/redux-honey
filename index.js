@@ -7,6 +7,11 @@ let initialStates = {};
 let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
 
+const defaultGetStateOptions = {
+	returnOriginal: false,
+	getIndexOfItem: false
+}
+
 
 
 
@@ -43,6 +48,9 @@ export const resetStoreToInitialState = () => {
 	store.dispatch({ type: RESET_STORE });
 }
 
+export wait from "./src/utils/wait";
+
+
 
 
 
@@ -70,12 +78,10 @@ const createUpdateState = stateKey => payload => {
 	store.dispatch({ type: stateKey, payload });
 }
 
-const createGetState = stateKey => (string, options = {}) => {
+const createGetState = stateKey => (string, options = defaultGetStateOptions) => {
 
 	if (!store)
 		return handleStoreNotSetError(`getState() for ${stateKey}`);
-
-	const { returnOriginal = false } = options;
 
 	try {
 
