@@ -2,10 +2,10 @@
 A lightweight, fast plugin that makes it a lot sweeter to work with advanced redux 🥰
 
 ## Some Benefits To Redux-Sugar
-- Reduces unnecessary file clutter (*AKA the infamous redux boilerplate*). It reduced my entire store file sizes by 45%!
-- No need for top-file action types like WHY_AM_I_YELLING
+- Reduces unnecessary file clutter (AKA the fun and famous *redux boilerplate*)
+- No need for top-file action types like **WHY_AM_I_YELLING**
 - No need to create ugly switch case statements to handle store updates
-- Built-in ability to to ```resetState``` or ```resetStoreToInitialState```
+- Built-in abilities to ```resetState``` and ```resetStoreToInitialState```
 
 # Installation
 
@@ -39,9 +39,11 @@ export default store;
 
 ## addSugar(stateKey, initialState)
 
+Call ```addSugar()``` to create a new piece of state
+
 ### Arguments
-- **stateKey** *required* - unique string. The filename / reducer name is recommended
-- **initialState** *required* - object that defines the stucture of this piece of your store
+- **stateKey** *(required)* - unique string. The filename / reducer name is recommended
+- **initialState** *(required)* - object that defines the stucture of this piece of your store
 
 ### Returns
 - **reducer** - function - never called directly. export out of the file to pass into *combineReducers()*
@@ -55,8 +57,8 @@ import { addSugar } from "redux-sugar";
 
 // The initialState for this piece of state
 const initialState = {
-	isReduxFun: false,
-	favLibrary: ""
+	loveProgramming: false,
+	favPlugin: "redux-sugar"
 };
 
 // addSugar() returns an object with its reducer and 3 methods - updateState(), getState(), and resetState()
@@ -66,8 +68,39 @@ export default reducer;
 
 ## updateState(payload)
 
-### Arguments
-- **payload** *required* - object - the object that defines the changes you want to make to your store
+Call ```updateState()``` to update the state
 
-As a safety check, you can't set keys that don't exist on the initialState. This prevents you from accidentally mispelling a key while calling **updateState()**.
+### Arguments
+- **payload** *required* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to update your state
+
+Example:
+
+```
+import { addSugar } from "redux-sugar";
+
+// The initialState for this piece of state
+const initialState = {
+	loveProgramming: false,
+	favPlugin: "redux-sugar",
+	stateHasBeenUpdated: false
+};
+
+// addSugar() returns an object with its reducer and 3 methods - updateState(), getState(), and resetState()
+const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+export default reducer;
+
+// Called 
+const updateFavPlugin = (selectedFavPlugin) => {
+
+	updateState({ favPlugin: selectedFavPlugin, stateHasBeenUpdated: true });
+}
+```
+
+#### Side Note
+As a safety check, you can't set keys that don't exist on the initialState when calling ```updateState()```. This prevents you from accidentally mispelling a key when trying to **updateState()**. It also prevents you from needing to bash your head against the wall when you didn't realize you spelled it ```favPlugim```;
+
+```
+// This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
+updateState({ stateHasBeenUpdated: true, isGoingToFailToUpdate: true });
+```
 
