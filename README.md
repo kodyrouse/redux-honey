@@ -226,12 +226,12 @@ Super simple!
 ## wait(duration)
 
 ### Arguments
-- **duration** *(required)* - integer - the number of ms you want to wait 
+- **duration** *(required)* - number - the number of ms you want to wait 
 
 ### Returns
 *null*
 
-Call ```wait()``` when you need to block code execution for a defined duration. An example of it's use is above.
+Call ```wait()``` when you need to block code execution for a defined duration. An example of it's use is above ☝️
 
 
 ## resetStoreToInitialState()
@@ -242,7 +242,7 @@ Call ```wait()``` when you need to block code execution for a defined duration. 
 ### Returns
 *null*
 
-Call ```resetStoreToInitialState()``` when you need to reset all states in your store back to its initialState. A usage example would be after a user signs out.
+Call ```resetStoreToInitialState()``` when you need to reset all states in your store back to its initialState. A use case would be after a user signs out.
 
 ## License 
 

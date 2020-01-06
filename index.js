@@ -91,10 +91,10 @@ const createGetState = stateKey => (string, options = defaultGetStateOptions) =>
 		const keys = string.split(" ");
 
 		keys.forEach(key => {
-			state = getStatePieceWithKey(state, key);
+			state = getStatePieceWithKey(state, key, options);
 		});
 
-		return (returnOriginal) ? state : cloneState(state);
+		return (options.returnOriginal) ? state : cloneState(state);
 
 	} catch(error) {
 		console.warn(`Redux-Sugar: \n Could not getState() for the given string "${string}"`);
