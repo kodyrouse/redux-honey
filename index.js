@@ -16,10 +16,10 @@ const defaultGetStateOptions = {
 
 
 
-export const createHoneyPot = injectedStore => {
+export const addToHoneyPot = injectedStore => {
 
 	if (!canInjectStore(injectedStore))
-		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - passed store is not a redux store.`);
+		return console.warn(`Redux-Honey: \n Could not call addToHoneyPot() - passed store is not a redux store.`);
 
 	store = injectedStore;
 }
@@ -144,7 +144,7 @@ const canInjectStore = store => (
 )
 
 const handleStoreNotSetError = uncalledMethodName => {
-	console.warn(`Redux-Honey: \n Unable to call ${uncalledMethodName} - please ensure you pass your store into createHoneyPot() correctly when instantiating your store.`);
+	console.warn(`Redux-Honey: \n Unable to call ${uncalledMethodName} - please ensure you pass your store into addToHoneyPot() correctly when instantiating your store.`);
 }
 
 const getPropertyKeyAndValue = key => {

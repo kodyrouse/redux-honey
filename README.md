@@ -23,11 +23,11 @@ yarn add redux-honey
 # Usage
 
 ## Initialize
-Pass your store into ```createHoneyPot``` at creation:
+Pass your store into ```addToHoneyPot``` at creation:
 
 ```js
 import { createStore, combineReducers } from "redux";
-import { createHoneyPot } from "redux-honey";
+import { addToHoneyPot } from "redux-honey";
 import funWithReduxHoneyReducer from "./funWithReduxHoneyReducer";
 
 const combinedReducers = combineReducers({
@@ -36,8 +36,8 @@ const combinedReducers = combineReducers({
 
 const store = createStore(combinedReducers);
 
-// Pass your store into createHoneyPot to add the magic
-createHoneyPot(store);
+// Pass your store into addToHoneyPot to add the magic
+addToHoneyPot(store);
 
 export default store;
 ```
