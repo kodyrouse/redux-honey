@@ -2,7 +2,7 @@
 A simple, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does! As your application starts to scale though, your files become *littered* with unnecessary boilerplate code and complicated craziness. It makes it difficult to maintain and read, which hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does! The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store becomes a complicated mess. It hurts my soul! This is where ```redux-honey``` comes to the rescue 🙌
 
 # Benefits To Using Redux-Honey
 - Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
