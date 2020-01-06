@@ -8,7 +8,7 @@ In a lot of ways, redux is *fantastic* at what it does! As your application star
 - Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
 - No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements
 - Built-in abilities to ```resetState``` and ```resetStoreToInitialState```
-- Allows a simplier use of async updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
+- Allows for simplier usage of asynchronous updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
 # Installation
 
@@ -44,10 +44,10 @@ export default store;
 
 ## addSugar(stateKey, initialState)
 
-Call ```addSugar()``` to create a new piece of state
+Call ```addSugar(stateKey, initialState)``` to create a new piece of state
 
 ### Arguments
-- **stateKey** *(required)* - unique string. The filename / reducer name is recommended for debugging purposes
+- **stateKey** *(required)* - unique string. The file/reducer name is recommended for debugging purposes
 - **initialState** *(required)* - object that defines the stucture of this piece of your store
 
 ### Returns
@@ -58,7 +58,7 @@ Call ```addSugar()``` to create a new piece of state
 
 Example:
 ```
-// This is what funWithReduxSugarReducer.js would look like
+// This is funWithReduxSugarReducer.js
 
 import { addSugar } from "redux-sugar";
 
@@ -75,7 +75,7 @@ export default reducer;
 
 ## updateState(payload)
 
-Call ```updateState()``` to update its state
+Call ```updateState(payload)``` to update its state
 
 ### Arguments
 - **payload** *(required)* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to update your state
@@ -86,9 +86,11 @@ Call ```updateState()``` to update its state
 Example:
 
 ```
+// This is funWithReduxSugarReducer.js
+
 import { addSugar } from "redux-sugar";
 
-// The initialState for this file
+// The initialState for this piece of state
 const initialState = {
  loveProgramming: false,
  favPlugin: "redux-sugar",
@@ -98,8 +100,8 @@ const initialState = {
 const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
 export default reducer;
 
-// Called inside a react component
-export const updateFavPlugin = (selectedFavPlugin) => {
+// Called in a react component
+export const updateFavPlugin = selectedFavPlugin => {
 
 	// updates state's favPlugin and isStateUpdated
 	updateState({ favPlugin: selectedFavPlugin, isStateUpdated: true });
@@ -107,27 +109,25 @@ export const updateFavPlugin = (selectedFavPlugin) => {
 ```
 
 #### Side Note
-As a safety check, you can't pass key-value pairs that didn't exist on the initialState when calling ```updateState()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬 when you didn't realize you accidentally spelled it ```favPlugim```;
+As a safety check, you can't pass key-value pairs that didn't exist on the initialState when calling ```updateState()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬 when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```;
 
 ```
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
-updateState({ favPlugin: "", isGoingToFailToUpdate: true });
+updateState({ favPlugin: "redux-sugar", isGoingToFailToUpdate: true });
 ```
 
 ## getState(keysString, options)
 
-Call ```getState()``` to retrieve what you need from its state. Pass no keysString to get the entire state piece
+Call ```getState(keysString, options)``` to retrieve what you need from its state.
 
 ### Arguments
-- **keys** *(optional)* - string - space-separated set of keys. If you want to get the entire state, you don't need to pass anything
-- **options** *(optional)* - object - a set of options when calling ```getState()```. Options are defined [Link-here](### Options)
+- **keysString** *(optional)* - string - space-separated set of keys. If you want to get the entire state, pass no arguments for ```keysString```
+- **options** *(optional)* - object - a set of options when calling ```getState()```. Options are defined below.
 
 ### Returns
 - the piece of state that matches the passed keysString
 
-This one is *pretty* neat, so get yo popcorn ready! 🍿
-
-Here's an example of how to get a deeply-nested piece of state:
+This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
 
 ```
 // An example state structure
@@ -152,8 +152,7 @@ getState("bodyDetails athletics sportingAbilities");
 
 It's *that* simple! 🎉
 
-One of the (many!) cool aspects about ```getState``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you! *(If you want to return the original object or array, checkout [Link-options](### Options)*
-
+One of the (many!) cool aspects about ```getState``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
 
 ### Options
 
@@ -208,10 +207,10 @@ export default reducer;
 
 export const showFunStuffAction = async () => {
 	
- // Let components know that . You know, if you're into that stuff. Batteries not included
+ // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
  updateState({ isFetching: true });
 
- // wait() is a built-in promise method
+ // wait() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
  await wait(500);
 
@@ -225,7 +224,7 @@ Super simple!
 ## wait(duration)
 
 ### Arguments
-- **duration** *(required)* - number - the number of ms you want to wait 
+- **duration** *(required)* - number - the number of ms you want to wait until continuing
 
 ### Returns
 *null*
@@ -242,6 +241,31 @@ Call ```wait()``` when you need to block code execution for a defined duration. 
 *null*
 
 Call ```resetStoreToInitialState()``` when you need to reset all states in your store back to its initialState. A use case would be after a user signs out.
+
+Example:
+
+```
+import { addSugar, resetStoreToInitialState } from "redux-sugar";
+
+
+
+// addSugar() returns an object with its reducer, updateState, getState, and resetState
+const { reducer, updateState, getState, resetState } = addSugar("funWithReduxSugar", initialState);
+export default reducer;
+
+
+
+export const showFunStuffAction = async () => {
+	
+ // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
+ updateState({ isSigningOut: true });
+
+ // For fun because why not :)
+ await wait(1000);
+
+ // Resets entire store back to all passed initialStates
+ resetStoreToInitialState();
+}
 
 ## License 
 

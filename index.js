@@ -26,7 +26,7 @@ export const sugarcoatStore = injectedStore => {
 
 export const addSugar = (stateKey, initialState) => {
 
-	if (!isValidStateKey(stateKey))
+	if (!isUniqueAndValidStateKey(stateKey))
 		return console.warn(`Redux-Sugar: \n Unable to call addSugar() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
 
 	addStateKeyToStateKeys(stateKey);
@@ -119,7 +119,7 @@ const createResetState = stateKey => () => {
 
 
 
-const isValidStateKey = stateKey => (
+const isUniqueAndValidStateKey = stateKey => (
 	stateKey && typeof stateKey === "string" && !stateKeys[stateKey] && stateKey.length > 0
 )
 
