@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
@@ -8,5 +8,9 @@
   },
   "author": "Kody Rouse",
   "license": "ISC",
-  "dependencies": {}
+  "dependencies": {},
+  "devDependencies": {
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+  }
 }
