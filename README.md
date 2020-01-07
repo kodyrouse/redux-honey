@@ -16,7 +16,7 @@ In a lot of ways, redux is *fantastic* at what it does! The problems begin to ar
 // With npm
 npm i redux-honey
 
-// Or with yarn
+// With yarn
 yarn add redux-honey
 ```
 
