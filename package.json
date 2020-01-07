@@ -8,8 +8,13 @@
   },
   "author": "Kody Rouse",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "@babel/polyfill": "^7.7.0",
+    "redux": "^4.0.5"
+  },
   "devDependencies": {
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
+    "@babel/plugin-transform-arrow-functions": "^7.7.4",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0"
   }
