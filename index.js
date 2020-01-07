@@ -1,5 +1,5 @@
 import deepClone from "./src/utils/deepClone";
-import pause from "./src/utils/wait";
+import wait from "./src/utils/wait";
 
 
 
@@ -17,10 +17,10 @@ const defaultGetStateOptions = {
 
 
 
-export const addToHoneyPot = injectedStore => {
+export const createHoneyPot = injectedStore => {
 
 	if (!canInjectStore(injectedStore))
-		return console.warn(`Redux-Honey: \n Could not call addToHoneyPot() - passed store is not a redux store.`);
+		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - passed store is not a redux store.`);
 
 	store = injectedStore;
 }
@@ -35,9 +35,7 @@ export const addHoney = (stateKey, initialState) => {
 
 	return { 
 		reducer: createReducer(stateKey, initialState),
-		updateState: createUpdateState(stateKey),
-		getState: createGetState(stateKey),
-		resetState: createResetState(stateKey)
+		state: createState(stateKey)
 	}
 }
 
@@ -49,7 +47,7 @@ export const resetStoreToInitialState = () => {
 	store.dispatch({ type: RESET_STORE });
 }
 
-export const wait = pause;
+export { wait };
 
 
 
@@ -67,14 +65,22 @@ const createReducer = (stateKey, initialState) => (
 	)
 )
 
+const createState = stateKey => {
+	return {
+		update: createUpdateState(stateKey),
+		get: createGetState(stateKey),
+		reset: createResetState(stateKey)
+	}
+}
+
 const createUpdateState = stateKey => payload => {
 
 	if (!store)
-		return handleStoreNotSetError(`updateState() for ${stateKey}`);
+		return handleStoreNotSetError(`state.update() for ${stateKey}`);
 
 	const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
 	if (invalidKeysInPayload.length)
-		return handleGivenInvalidPayloadKeys(invalidKeysInPayload, payload, stateKey);
+		return handleGivenInvalidKeysError(invalidKeysInPayload, payload, stateKey);
 
 	store.dispatch({ type: stateKey, payload });
 }
@@ -82,7 +88,7 @@ const createUpdateState = stateKey => payload => {
 const createGetState = stateKey => (string, options = defaultGetStateOptions) => {
 
 	if (!store)
-		return handleStoreNotSetError(`getState() for ${stateKey}`);
+		return handleStoreNotSetError(`state.get() for ${stateKey}`);
 
 	try {
 
@@ -106,7 +112,7 @@ const createGetState = stateKey => (string, options = defaultGetStateOptions) =>
 const createResetState = stateKey => () => {
 
 	if (!store)
-		return handleStoreNotSetError(`resetState() for ${stateKey}`);
+		return handleStoreNotSetError(`state.reset() for ${stateKey}`);
 
 	const initialState = deepClone(initialStates[stateKey]);
 	store.dispatch({ type: stateKey, payload: initialState });
@@ -241,6 +247,6 @@ const getArrayItemByPropertKey = (state, key) => {
 	return arrayItem;
 }
 
-const handleGivenInvalidPayloadKeys = (invalidKeysInPayload, payload, stateKey) => {
-	console.warn(`Redux-Honey: \n Could not call updateState() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
+const handleGivenInvalidKeysError = (invalidKeysInPayload, payload, stateKey) => {
+	console.warn(`Redux-Honey: \n Could not call state.update() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 }
