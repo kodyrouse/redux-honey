@@ -1,4 +1,5 @@
 import deepClone from "./src/utils/deepClone";
+import pause from "./src/utils/wait";
 
 
 
@@ -48,7 +49,7 @@ export const resetStoreToInitialState = () => {
 	store.dispatch({ type: RESET_STORE });
 }
 
-export wait from "./src/utils/wait";
+export const wait = pause;
 
 
 
