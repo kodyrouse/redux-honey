@@ -1,9 +1,12 @@
 
 # ChangeLog
 
-#### **1.2.0**
+## Next Updates
 - Added option for ```getState()``` to return a deepCloned copy of the retrieved state
 - Added option for ```getState()``` to return the index of an array item
+
+#### **1.1.1**
+- Bug Fix: fixed issue with wait method being incorrectly exported
 
 #### **1.1.0**
 - Added method ```wait``` for easy use of asynchronous actions 
