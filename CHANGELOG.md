@@ -2,8 +2,13 @@
 # ChangeLog
 
 ## Next Updates
-- Added option for ```getState()``` to return a deepCloned copy of the retrieved state
-- Added option for ```getState()``` to return the index of an array item
+- Added option for ```state.get()``` to return a deepCloned copy of the retrieved state
+- Added option for ```state.get()``` to return the index of an array item
+
+#### **2.0.0**
+- changed method name to inject store to ```createHoneyPot```
+- Now ```addHoney``` returns ```{ reducer, state }```. State now contains methods on it to ```update, get, and reset```
+- updated folder & file structure
 
 #### **1.1.1**
 - Bug Fix: fixed issue with wait method being incorrectly exported

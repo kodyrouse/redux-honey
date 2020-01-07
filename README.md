@@ -2,12 +2,12 @@
 A simple, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does! The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store becomes a complicated mess. It hurts my soul! This is where ```redux-honey``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
 
 # Benefits To Using Redux-Honey
 - Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
 - No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements
-- Built-in abilities to ```resetState``` and ```resetStoreToInitialState```
+- Built-in methods to ```state.reset()``` and ```resetStoreToInitialState```
 - Allows for simplier usage of asynchronous updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
 # Installation
@@ -23,11 +23,11 @@ yarn add redux-honey
 # Usage
 
 ## Initialize
-Pass your store into ```addToHoneyPot``` at creation:
+Pass your store into ```createHoneyPot``` at creation:
 
 ```js
 import { createStore, combineReducers } from "redux";
-import { addToHoneyPot } from "redux-honey";
+import { createHoneyPot } from "redux-honey";
 import funWithReduxHoneyReducer from "./funWithReduxHoneyReducer";
 
 const combinedReducers = combineReducers({
@@ -36,8 +36,8 @@ const combinedReducers = combineReducers({
 
 const store = createStore(combinedReducers);
 
-// Pass your store into addToHoneyPot to add the magic
-addToHoneyPot(store);
+// Pass your store into createHoneyPot to initialize the magic
+createHoneyPot(store);
 
 export default store;
 ```
@@ -46,15 +46,13 @@ export default store;
 
 Call ```addHoney(stateKey, initialState)``` to create a new piece of state
 
-### Arguments
+#### Arguments
 - **stateKey** *(required)* - unique string. The file/reducer name is recommended for debugging purposes
 - **initialState** *(required)* - object that defines the stucture of this piece of your store
 
-### Returns
+#### Returns
 - **reducer** - *(function)* - never called directly. Export out of the file to pass into *combineReducers()*
-- **updateState** - *(function)* - used to update *this* piece of state only
-- **getState** - *(function)* - used to get state from *this* piece of state only
-- **resetState** - *(function)* - used to reset *this* piece of state back to the original *initialState* that was passed when calling ```addHoney()```
+- **state** - *(object)* - an object containing the methods used to get, update, and reset this piece of state
 
 Example:
 ```js
@@ -68,19 +66,23 @@ const initialState = {
  favPlugin: "redux-honey"
 };
 
-// addHoney() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
+// addHoney() returns an object with its reducer and a state object
+const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 ```
 
-## updateState(payload)
+## state
 
-Call ```updateState(payload)``` to update its state
+The returned ```state``` is an object that contains three methods: ```update```, ```get```, and ```reset```.
 
-### Arguments
+### state.update(payload)
+
+Call ```state.update(payload)``` to update its state
+
+#### Arguments
 - **payload** *(required)* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to update your state
 
-### Returns
+#### Returns
 *null*
 
 Example:
@@ -97,34 +99,34 @@ const initialState = {
  isStateUpdated: false
 };
 
-const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
+const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 // Called in a react component
 export const updateFavPlugin = selectedFavPlugin => {
 
 	// updates state's favPlugin and isStateUpdated
-	updateState({ favPlugin: selectedFavPlugin, isStateUpdated: true });
+	state.update({ favPlugin: selectedFavPlugin, isStateUpdated: true });
 }
 ```
 
 #### Side Note
-As a safety check, you can't pass key-value pairs that didn't exist on the initialState when calling ```updateState()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬 when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```;
+As a safety check when calling ```state.update()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience;
 
 ```js
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
-updateState({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
+state.update({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
 ```
 
-## getState(keysString, options)
+### state.get(keysString, options)
 
-Call ```getState(keysString, options)``` to retrieve what you need from its state.
+Call ```state.get(keysString, options)``` to retrieve what you need from its state.
 
-### Arguments
+#### Arguments
 - **keysString** *(optional)* - string - space-separated set of keys. If you want to get the entire state, pass no arguments for ```keysString```
-- **options** *(optional)* - object - a set of options when calling ```getState()```. Options are defined below.
+- **options** *(optional)* - object - a set of options when calling ```state.get()```. Options are defined below.
 
-### Returns
+#### Returns
 - the piece of state that matches the passed keysString
 
 This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
@@ -147,16 +149,16 @@ This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
 }
 
 // If I wanted to get the sportingAbilities array, you pass an in-order list of keys like so:
-getState("bodyDetails athletics sportingAbilities");
+state.get("bodyDetails athletics sportingAbilities");
 ```
 
 It's *that* simple! 🎉
 
-One of the (many!) cool aspects about ```getState``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
+One of the (many!) cool aspects about ```state.get()``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
 
-### Options
+#### Options
 
-**returnOriginal** - defaults to `false`. Set to `true` when calling `getState` to return the original, uncloned copy of your state
+**returnOriginal** - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
 
 ```js
 // An example state structure
@@ -179,18 +181,18 @@ One of the (many!) cool aspects about ```getState``` is that, by default, it ret
 const options = { returnOriginal: true };
 
 // Returns an uncloned object for sportingAbilities
-const sportingAbilities = getState("bodyDetails athletics sportingAbilities", options);
+const sportingAbilities = state.get("bodyDetails athletics sportingAbilities", options);
 ```
 
-## resetState()
+### state.reset()
 
-### Arguments
+#### Arguments
 *none*
 
-### Returns
+#### Returns
 *null*
 
-Call ```resetState()``` to set the state piece back to the passed initialState passed.
+Call ```state.reset()``` to set the state piece back to the passed initialState passed.
 
 Example:
 
@@ -199,8 +201,8 @@ import { addHoney, wait } from "redux-honey";
 
 
 
-// addHoney() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
+// addHoney() returns an object with its reducer, updateState, getState, and state.reset()
+const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 
@@ -208,14 +210,14 @@ export default reducer;
 export const showFunStuffAction = async () => {
 	
  // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
- updateState({ isFetching: true });
+ state.update({ isFetching: true });
 
  // wait() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
  await wait(500);
 
  // Resets this piece of state back to what it was when addHoney() was called
- resetState();
+ state.reset();
 }
 ```
 
@@ -223,10 +225,10 @@ Super simple!
 
 ## wait(duration)
 
-### Arguments
+#### Arguments
 - **duration** *(required)* - number - the number of ms you want to wait until continuing
 
-### Returns
+#### Returns
 *null*
 
 Call ```wait()``` when you need to block code execution for a defined duration. An example of it's use is above ☝️
@@ -234,10 +236,10 @@ Call ```wait()``` when you need to block code execution for a defined duration. 
 
 ## resetStoreToInitialState()
 
-### Arguments
+#### Arguments
 *none*
 
-### Returns
+#### Returns
 *null*
 
 Call ```resetStoreToInitialState()``` when you need to reset all states in your store back to its initialState. A use case would be after a user signs out.
@@ -249,8 +251,8 @@ import { addHoney, resetStoreToInitialState } from "redux-honey";
 
 
 
-// addHoney() returns an object with its reducer, updateState, getState, and resetState
-const { reducer, updateState, getState, resetState } = addHoney("funWithReduxHoney", initialState);
+// addHoney() returns an object with its reducer and its state object
+const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 
 
@@ -258,7 +260,7 @@ export default reducer;
 export const showFunStuffAction = async () => {
 	
  // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
- updateState({ isSigningOut: true });
+ state.update({ isSigningOut: true });
 
  // For fun because why not :)
  await wait(1000);
