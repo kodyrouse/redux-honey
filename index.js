@@ -58,7 +58,7 @@ export { wait };
 
 const createReducer = (stateKey, initialState) => (
 	(state = initialState, { type, payload }) => ((shouldUpdateState(type, stateKey))
-		? {...state, ...payload}
+		? Object.assign({}, state, payload)
 		: (type === RESET_STORE)
 		? deepClone(initialState)
 		: state
@@ -171,11 +171,22 @@ const getPropertyKeyAndValue = key => {
 const cloneState = state => (state == null
 	? null
 	: Array.isArray(state)
-	? [...state]
+	? cloneArray(state)
 	: (typeof state === "object")
-	? {...state}
+	? Object.assign({}, state)
 	: state
 );
+
+const cloneArray = state => {
+
+	const clonedArray = [];
+
+	state.forEach(item => {
+		clonedArray.push(item);
+	});
+
+	return clonedArray;
+}
 
 const getKeyForInitialState = stateKey => `${stateKey}${RESET_STORE}`;
 
