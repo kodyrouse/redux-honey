@@ -75,7 +75,17 @@ export default reducer;
 
 The returned ```state``` is an object that contains three methods: ```update```, ```get```, and ```reset```.
  
- 
+```js
+
+// Gets piece of state
+state.get();
+
+// Updates state
+state.update();
+
+// Reset back to the initialState that was passed in addHoney
+state.reset();
+```
 
 ## state.update(payload)
 
