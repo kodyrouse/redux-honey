@@ -156,6 +156,57 @@ It's *that* simple! 🎉
 
 One of the (many!) cool aspects about ```state.get()``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
 
+### state.get() -> item from array
+
+This is where ```state.get()``` gets *really* cool. Not only does it return a nice, shallow-cloned version of what you were looking for, but you can also get an item from an array in two different ways.
+
+An example to retrieve an item in an array based on index:
+
+```js
+
+// An example state structure
+{
+ favPlugins: ["redux-honey", "redux", "react"]
+}
+
+// This returns the item in the array at position 2 as long as it exists
+// favPluginAtPos3 would be "react"
+const favPluginAtPos2 = state.get("favPlugins [2]");
+```
+
+An example to retrieve an item in an array with a matched key-value pair:
+
+```js
+
+// An example state structure
+{
+ friends: [
+  {
+    id: 21,
+    name: "Tom Smith"
+  },
+  {
+    id: 45,
+    name: "Johnny Boy"
+  },
+  {
+    id: 92,
+    name: "Carl Thompson"
+  }
+ ]
+}
+
+// This returns the item in the array that has an id of 45
+// "friend" will be { id: 45, name: "Johnny Boy" }
+const friend = state.get("friends [id=45]");
+
+// This returns the item in the array that has a name of "Tom Smith"
+// "friend" will be { id: 21, name: "Tom Smith" }
+const friend = state.get("friends [name=Tom Smith]");
+```
+
+Now *that* is pretty freakin cool. 🤓
+
 #### Options
 
 **returnOriginal** - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
