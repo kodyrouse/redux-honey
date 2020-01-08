@@ -117,8 +117,8 @@ export default reducer;
 // Called in a react component
 export const updateFavPlugin = selectedFavPlugin => {
 
-	// updates state's favPlugin and isStateUpdated
-	state.update({ favPlugin: selectedFavPlugin, isStateUpdated: true });
+ // updates state's favPlugin and isStateUpdated
+ state.update({ favPlugin: selectedFavPlugin, isStateUpdated: true });
 }
 ```
 
