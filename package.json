@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
@@ -13,10 +13,10 @@
     "redux": "^4.0.5"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-object-rest-spread": "^7.7.7",
     "@babel/plugin-transform-arrow-functions": "^7.7.4",
     "@babel/preset-env": "^7.7.7",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0"
-  }
+  },
+  "keywords": ["redux", "redux-honey", "react", "redux plugin", "asynchronous redux", "async", "async redux", "redux-thunk", "redux-saga"]
 }
