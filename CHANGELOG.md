@@ -1,9 +1,9 @@
 
 # ChangeLog
 
-## Next Updates
-- Added option for ```state.get()``` to return a deepCloned copy of the retrieved state
-- Added option for ```state.get()``` to return the index of an array item
+## **2.1.0**
+- Added option ```deepClone``` for ```state.get()``` to return a deepCloned copy of the retrieved state
+- Added option for ```getItemIndex``` ```state.get()``` to return the index of an array item
 
 #### **2.0.0**
 - changed method name to inject store to ```createHoneyPot```

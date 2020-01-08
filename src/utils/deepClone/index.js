@@ -2,10 +2,8 @@
 export default input => {
 
 	// Prevents invalid input
-	if (validateNull(input) || !validateInputForDeepClone(input)) {
-		console.warn(`Deep Clone input invalid : ${input} is not of type object or array`);
-		return;
-	}
+	if (validateNull(input) || !validateInputForDeepClone(input))
+		return input;
 
 	// Starts deep clone of array || object depending on input
 	// I use validateArray first because typeof "object" passes true for an array
@@ -42,14 +40,14 @@ const deepCloneArray = array => {
 	return newArray;
 };
 
-const copyValue = priorVal => {
-
-	// I use validateNull && validateArray first because typeof "object" passes true for an array
-	return (validateNull(priorVal)) ? priorVal
-		:	(validateArray(priorVal)) ? deepCloneArray(priorVal)
-		: (validateObject(priorVal)) ? deepCloneObject(priorVal)
-		: priorVal;
-};
+const copyValue = priorVal => (validateNull(priorVal)
+	? priorVal
+	:	(validateArray(priorVal))
+	? deepCloneArray(priorVal)
+	: (validateObject(priorVal))
+	? deepCloneObject(priorVal)
+	: priorVal
+);
 
 const validateNull = input => (
 	input === null

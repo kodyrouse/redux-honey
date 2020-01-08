@@ -10,10 +10,9 @@ const RESET_STORE = "__rootStore/__RESET_STORE";
 
 const defaultGetStateOptions = {
 	returnOriginal: false,
-	getIndexOfItem: false
+	getItemIndex: false,
+	deepClone: false
 }
-
-
 
 
 
@@ -85,15 +84,18 @@ const createUpdateState = stateKey => payload => {
 	store.dispatch({ type: stateKey, payload });
 }
 
-const createGetState = stateKey => (string, options = defaultGetStateOptions) => {
+const createGetState = stateKey => (string, options) => {
 
 	if (!store)
 		return handleStoreNotSetError(`state.get() for ${stateKey}`);
 
 	try {
 
+		options = setGetStateOptions(options, stateKey);
+
 		let state = getRootStateItemByStateKey(stateKey);
-		if (!canGetStateWithString(string)) return state;
+		if (!canGetNestedStatePiecesWithString(string))
+			return state;
 
 		const keys = string.split(" ");
 
@@ -101,11 +103,13 @@ const createGetState = stateKey => (string, options = defaultGetStateOptions) =>
 			state = getStatePieceWithKey(state, key, options);
 		});
 
-		return (options.returnOriginal) ? state : cloneState(state);
-
+		return (options.returnOriginal)
+			? state
+			: (options.deepClone)
+			? deepClone(state)
+			: cloneState(state);
 	} catch(error) {
-		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}"`);
-		console.warn(`Redux-Honey: \n ${error}`);
+		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}`);
 	}
 }
 
@@ -138,7 +142,7 @@ const addInitialStateToInitialStates = (stateKey, initialState) => {
 	initialStates[stateKey] = deepClone(initialState);
 }
 
-const canGetStateWithString = string => (
+const canGetNestedStatePiecesWithString = string => (
 	string && typeof string === "string" && string.length > 0
 )
 
@@ -213,7 +217,9 @@ const getRootStateItemByStateKey = stateKey => (
 	store.getState()[stateKey]
 )
 
-const getStatePieceWithKey = (state, key) => (keyIsPropertyOnArrayObject(key)
+const getStatePieceWithKey = (state, key, options) => ((keyIsPropertyOnArrayObject(key) && options.getItemIndex)
+	? getIndexOfArrayItem(state, key)
+	: keyIsPropertyOnArrayObject(key)
 	? getArrayItemByPropertKey(state, key)
 	: (keyIsIndexForArrayItem(key))
 	? getArrayItemByIndex(state, key)
@@ -228,6 +234,19 @@ const keyIsPropertyOnArrayObject = key => (
 	keyIsIndexForArrayItem(key) && (isNaN(key.slice(1, -1)))
 )
 
+const getIndexOfArrayItem =(state, key) => {
+
+	if (!Array.isArray(state))
+		throw new Error("Could not get index of item from array - parent state piece is not an array");
+
+	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
+
+	const itemIndex = state.findIndex(stateItem => stateItem[propertyKey] === propertyValue);
+	if (itemIndex < 0)
+		throw new Error(`No item in the given array with a property ${propertyKey} with a value of ${propertyValue}. Ensure you passed a property key that exists`);
+
+	return itemIndex;
+}
 
 const getArrayItemByIndex = (state, key) => {
 
@@ -256,6 +275,40 @@ const getArrayItemByPropertKey = (state, key) => {
 		throw new Error(`No item in the given array with a property ${propertyKey} with a value of ${propertyValue}. Ensure you passed a property key that exists `);
 
 	return arrayItem;
+}
+
+const setGetStateOptions = (options = {}, stateKey) => {
+
+	if (typeof options !== "object" || Array.isArray(options))
+		throw new Error(`Invalid options type for ${stateKey} state.get(). Please ensure the passed options are an object`);
+
+	const getStateOptions = Object.assign({}, defaultGetStateOptions, options);
+	confirmGetStateOptionsAreValid(getStateOptions, stateKey);
+
+	return Object.assign({}, defaultGetStateOptions, options);
+}
+
+const confirmGetStateOptionsAreValid = (options, stateKey) => {
+
+	const { returnOriginal, getItemIndex, deepClone } = options;
+
+	if (deepClone && returnOriginal)
+		throwInvalidGetStateOptionsError(stateKey, "you have deepClone && returnOriginal set to true, which is not possible");
+
+	if (getItemIndex && deepClone)
+		throwInvalidGetStateOptionsError(stateKey, "you have deepClone && getItemIndex set to true, which is not possible");
+
+	if (getItemIndex && returnOriginal)
+		throwInvalidGetStateOptionsError(stateKey, "you have returnOriginal && getItemIndex set to true, which is not possible");
+
+	Object.keys(options).forEach(option => {
+		if (typeof defaultGetStateOptions[option] === "undefined")
+			throwInvalidGetStateOptionsError(stateKey, `${option} is not a usable option. Please checkout https://github.com/kodyrouse/redux-honey for available options`);
+	});
+}
+
+const throwInvalidGetStateOptionsError = (stateKey, message) => {
+	throw new Error(`Invalid options for ${stateKey} state.get() - ${message}`);
 }
 
 const handleGivenInvalidKeysError = (invalidKeysInPayload, payload, stateKey) => {

@@ -67,6 +67,8 @@ const initialState = {
 
 // addHoney() returns an object with its reducer and a state object
 const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+
+// Never called directly - exported out to pass into combineReducers() when instatiating your store
 export default reducer;
 ```
 
@@ -112,6 +114,8 @@ const initialState = {
 };
 
 const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+
+// Never called directly - exported out to pass into combineReducers() when instatiating your store
 export default reducer;
 
 // Called in a react component
@@ -196,6 +200,7 @@ An example to retrieve an item in an array with a matched key-value pair:
 
 // An example state structure
 {
+ name: "John Smith",
  friends: [
   {
     id: 21,
@@ -227,29 +232,37 @@ Now *that* is pretty freakin cool. 🤓
 ### Options
 
 **returnOriginal** - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
+**getItemIndex** - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```getItemIndex``` is set to `true`, ```returnOriginal``` nor ```deepClone``` can be set to `true`.
+**deepClone** - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```deepClone``` is set 
 
 ```js
 // An example state structure
 {
  name: "John Smith",
- bodyDetails: {
-  height: 185,
-  weight: 175,
-  athletics: {
-   athleticLevel: "somewhat",
-   sportingAbilities: {
-    isGoodAtFootball: false,
-    isGoodAtBaseball: false
-   }
+ friends: [
+  {
+    id: 21,
+    name: "Tom Smith"
+  },
+  {
+    id: 45,
+    name: "Johnny Boy"
+  },
+  {
+    id: 92,
+    name: "Carl Thompson"
   }
- }
+ ]
 }
 
-// Right now the only option is returnOriginal. More will likely be added in the future!
-const options = { returnOriginal: true };
+// Returns an uncloned array for sportingAbilities
+const friends = state.get("friends", { returnOriginal: true });
 
-// Returns an uncloned object for sportingAbilities
-const sportingAbilities = state.get("bodyDetails athletics sportingAbilities", options);
+// Returns a deep-cloned version of the friend with id = 21
+const tomSmith = state.get("friends [id=21]", { deepClone: true });
+
+// Returns the index of the object in friends with the id = 21
+const tomSmithIndex = state.get("friends [id=21]", { getItemIndex: true });
 ```
  
 
@@ -272,7 +285,10 @@ import { addHoney, wait } from "redux-honey";
 
 // addHoney() returns an object with its reducer, updateState, getState, and state.reset()
 const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+
+// Never called directly - exported out to pass into combineReducers() when instatiating your store
 export default reducer;
+
 
 
 
@@ -323,7 +339,10 @@ import { addHoney, resetStoreToInitialState } from "redux-honey";
 
 // addHoney() returns an object with its reducer and its state object
 const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+
+// Never called directly - exported out to pass into combineReducers() when instatiating your store
 export default reducer;
+
 
 
 
