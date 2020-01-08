@@ -20,9 +20,7 @@ npm i redux-honey
 yarn add redux-honey
 ```
 
-# Usage
-
-## Initialize
+# Initialize
 Pass your store into ```createHoneyPot``` at creation:
 
 ```js
@@ -42,15 +40,16 @@ createHoneyPot(store);
 export default store;
 ```
 
+
 ## addHoney(stateKey, initialState)
 
 Call ```addHoney(stateKey, initialState)``` to create a new piece of state
 
-#### Arguments
+### Arguments
 - **stateKey** *(required)* - unique string. The file/reducer name is recommended for debugging purposes
 - **initialState** *(required)* - object that defines the stucture of this piece of your store
 
-#### Returns
+### Returns
 - **reducer** - *(function)* - never called directly. Export out of the file to pass into *combineReducers()*
 - **state** - *(object)* - an object containing the methods used to get, update, and reset this piece of state
 
@@ -71,18 +70,21 @@ const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 export default reducer;
 ```
 
+
 ## state
 
 The returned ```state``` is an object that contains three methods: ```update```, ```get```, and ```reset```.
+ 
+ 
 
-### state.update(payload)
+## state.update(payload)
 
 Call ```state.update(payload)``` to update its state
 
-#### Arguments
+### Arguments
 - **payload** *(required)* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to update your state
 
-#### Returns
+### Returns
 *null*
 
 Example:
@@ -110,23 +112,26 @@ export const updateFavPlugin = selectedFavPlugin => {
 }
 ```
 
+ 
 #### Side Note
-As a safety check when calling ```state.update()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience;
+As a safety check when calling ```state.update()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience.
 
+ 
 ```js
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
 state.update({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
 ```
-
-### state.get(keysString, options)
+ 
+ 
+## state.get(keysString, options)
 
 Call ```state.get(keysString, options)``` to retrieve what you need from its state.
 
-#### Arguments
+### Arguments
 - **keysString** *(optional)* - string - space-separated set of keys. If you want to get the entire state, pass no arguments for ```keysString```
 - **options** *(optional)* - object - a set of options when calling ```state.get()```. Options are defined below.
 
-#### Returns
+### Returns
 - the piece of state that matches the passed keysString
 
 This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
@@ -155,8 +160,9 @@ state.get("bodyDetails athletics sportingAbilities");
 It's *that* simple! 🎉
 
 One of the (many!) cool aspects about ```state.get()``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
-
-### state.get() -> item from array
+ 
+ 
+## state.get(keysString, options) -> item from array
 
 This is where ```state.get()``` gets *really* cool. Not only does it return a nice, shallow-cloned version of what you were looking for, but you can also get an item from an array in two different ways.
 
@@ -206,8 +212,9 @@ const friend = state.get("friends [name=Tom Smith]");
 ```
 
 Now *that* is pretty freakin cool. 🤓
+ 
 
-#### Options
+### Options
 
 **returnOriginal** - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
 
@@ -234,13 +241,14 @@ const options = { returnOriginal: true };
 // Returns an uncloned object for sportingAbilities
 const sportingAbilities = state.get("bodyDetails athletics sportingAbilities", options);
 ```
+ 
 
-### state.reset()
+## state.reset()
 
-#### Arguments
+### Arguments
 *none*
 
-#### Returns
+### Returns
 *null*
 
 Call ```state.reset()``` to set the state piece back to the passed initialState passed.
@@ -273,24 +281,25 @@ export const showFunStuffAction = async () => {
 ```
 
 Super simple!
-
+ 
+ 
 ## wait(duration)
 
-#### Arguments
+### Arguments
 - **duration** *(required)* - number - the number of ms you want to wait until continuing
 
-#### Returns
+### Returns
 *null*
 
 Call ```wait()``` when you need to block code execution for a defined duration. An example of it's use is above ☝️
-
-
+ 
+ 
 ## resetStoreToInitialState()
 
-#### Arguments
+### Arguments
 *none*
 
-#### Returns
+### Returns
 *null*
 
 Call ```resetStoreToInitialState()``` when you need to reset all states in your store back to its initialState. A use case would be after a user signs out.
