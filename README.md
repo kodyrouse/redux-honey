@@ -221,9 +221,8 @@ An example to retrieve an item in an array with a matched key-value pair:
 // "friend" will be { id: 45, name: "Johnny Boy" }
 const friend = state.get("friends [id=45]");
 
-// This returns the item in the array that has a name of "Tom Smith"
-// "friend" will be { id: 21, name: "Tom Smith" }
-const friend = state.get("friends [name=Tom Smith]");
+// This returns null because no object in the friends array has a name "Frank Sinatra"
+const emptyFriend = state.get("friends [name=Frank Sinatra]");
 ```
 
 Now *that* is pretty freakin cool. 🤓
@@ -282,8 +281,7 @@ Example:
 import { addHoney, wait } from "redux-honey";
 
 
-
-// addHoney() returns an object with its reducer, updateState, getState, and state.reset()
+// addHoney() returns an object with its reducer and its state object
 const { reducer, state } = addHoney("funWithReduxHoney", initialState);
 
 // Never called directly - exported out to pass into combineReducers() when instatiating your store

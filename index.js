@@ -243,7 +243,7 @@ const getIndexOfArrayItem =(state, key) => {
 
 	const itemIndex = state.findIndex(stateItem => stateItem[propertyKey] === propertyValue);
 	if (itemIndex < 0)
-		throw new Error(`No item in the given array with a property ${propertyKey} with a value of ${propertyValue}. Ensure you passed a property key that exists`);
+		throw new Error(`No item in the given array was found with ${propertyKey} = ${propertyValue}. Ensure you passed a property key that exists`);
 
 	return itemIndex;
 }
@@ -271,10 +271,10 @@ const getArrayItemByPropertKey = (state, key) => {
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
 	const arrayItem = state.find(stateItem => stateItem[propertyKey] === propertyValue);
-	if (!arrayItem)
-		throw new Error(`No item in the given array with a property ${propertyKey} with a value of ${propertyValue}. Ensure you passed a property key that exists `);
-
-	return arrayItem;
+	
+	return (arrayItem)
+		? arrayItem
+		: null;
 }
 
 const setGetStateOptions = (options = {}, stateKey) => {
