@@ -270,11 +270,7 @@ const getArrayItemByPropertKey = (state, key) => {
 
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
-	const arrayItem = state.find(stateItem => stateItem[propertyKey] === propertyValue);
-	
-	return (arrayItem)
-		? arrayItem
-		: null;
+	return state.find(stateItem => stateItem[propertyKey] === propertyValue);
 }
 
 const setGetStateOptions = (options = {}, stateKey) => {

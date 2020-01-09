@@ -1,8 +1,8 @@
 
 # ChangeLog
 
-#### **2.1.1**
-- Removed error warning when calling ```state.get()``` to retrieve an item an array with a given key-value pair that doesn't exist. I found this to be unexpected behavior and it now returns ```null``` if one was not found in the array
+#### **2.1.2**
+- Removed error warning when calling ```state.get()``` to retrieve an item an array with a given key-value pair that doesn't exist. I found this to be unexpected behavior and it now returns ```undefined``` if one was not found in the array, which is typical behavior with the ```.find``` method for arrays
 
 #### **2.1.0**
 - Added option ```deepClone``` for ```state.get()``` to return a deepCloned copy of the retrieved state
