@@ -172,8 +172,8 @@ const getPropertyKeyAndValue = key => {
 	}
 }
 
-const cloneState = state => (state == null
-	? null
+const cloneState = state => ((state == null || state === undefined)
+	? state
 	: Array.isArray(state)
 	? cloneArray(state)
 	: (typeof state === "object")
