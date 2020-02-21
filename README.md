@@ -230,9 +230,9 @@ Now *that* is pretty freakin cool. 🤓
 
 ### Options
 
-**returnOriginal** - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
-**getItemIndex** - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```getItemIndex``` is set to `true`, ```returnOriginal``` nor ```deepClone``` can be set to `true`.
-**deepClone** - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```deepClone``` is set 
+**returnOriginal** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
+**getItemIndex** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```getItemIndex``` is set to `true`, ```returnOriginal``` nor ```deepClone``` can be set to `true`.
+**deepClone** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```deepClone``` is set 
 
 ```js
 // An example state structure
@@ -265,10 +265,10 @@ const tomSmithIndex = state.get("friends [id=21]", { getItemIndex: true });
 ```
  
 
-## state.reset()
+## state.reset(options)
 
 ### Arguments
-*none*
+- **options** *(optional)* - object - a set of options when calling ```state.reset()```. Options are defined below.
 
 ### Returns
 *null*
@@ -279,6 +279,8 @@ Example:
 
 ```js
 import { addHoney, wait } from "redux-honey";
+
+const initialState = {...}
 
 
 // addHoney() returns an object with its reducer and its state object
@@ -305,7 +307,41 @@ export const showFunStuffAction = async () => {
 ```
 
 Super simple!
- 
+
+### Options
+
+**keepKeyValues** - *(optional)* - array - An array of keys you would like to keep in their initial state while resetting the reset of the state
+
+```js
+import { addHoney } from "redux-honey";
+
+const initialState = {
+ loveProgramming: false,
+ favPlugin: "redux-honey"
+};
+
+
+// addHoney() returns an object with its reducer and its state object
+const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+
+// Never called directly - exported out to pass into combineReducers() when instatiating your store
+export default reducer;
+
+
+
+
+export const resetStateExcept = async () => {
+
+ state.update({ loveProgramming: true, favPlugin: "I'm lying" });
+
+
+ // Resets state back to original state except it keeps the current value for "loveProgramming"
+ state.reset({
+  keepKeyValues: ["loveProgramming"]
+ });
+}
+```
+
  
 ## wait(duration)
 

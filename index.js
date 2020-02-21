@@ -14,6 +14,10 @@ const defaultGetStateOptions = {
 	deepClone: false
 }
 
+const defaultResetStateOptions = {
+	keepKeyValues: []
+}
+
 
 
 export const createHoneyPot = injectedStore => {
@@ -113,13 +117,20 @@ const createGetState = stateKey => (string, options) => {
 	}
 }
 
-const createResetState = stateKey => () => {
+const createResetState = stateKey => (options) => {
 
 	if (!store)
 		return handleStoreNotSetError(`state.reset() for ${stateKey}`);
 
-	const initialState = deepClone(initialStates[stateKey]);
-	store.dispatch({ type: stateKey, payload: initialState });
+	options = setResetStateOptions(options, stateKey);
+	const { keepKeyValues } = options;
+
+	let newState = deepClone(initialStates[stateKey]);
+
+	if (keepKeyValues.length)
+		newState = Object.assign({}, newState, getObjectValuesForKeys(stateKey, keepKeyValues));
+
+	store.dispatch({ type: stateKey, payload: newState });
 }
 
 
@@ -193,6 +204,20 @@ const cloneArray = state => {
 }
 
 const getKeyForInitialState = stateKey => `${stateKey}${RESET_STORE}`;
+
+const getObjectValuesForKeys = (stateKey, keepKeyValues) => {
+
+	const state = getRootStateItemByStateKey(stateKey);
+	let stateToKeep = {};
+
+	const keepKeyValuesLn = keepKeyValues.length;
+	keepKeyValues.forEach(key => {
+		if (typeof state[key] !== "undefined")
+			stateToKeep[key] = state[key]
+		else
+			console.warn(`Redux-Honey: \n Given keepKeyValues key -> ${key} for state.reset() does not exist for ${stateKey}. The key -> ${key} is likely misspelled or it needs to be added to the passed initialState when calling addHoney().`);
+	});
+}
 
 const checkIfPayloadKeysExistInState = (stateKey, payload) => {
 
@@ -282,6 +307,14 @@ const setGetStateOptions = (options = {}, stateKey) => {
 	confirmGetStateOptionsAreValid(getStateOptions, stateKey);
 
 	return Object.assign({}, defaultGetStateOptions, options);
+}
+
+const setResetStateOptions = (options = {}, stateKey) => {
+
+	if (typeof options !== "object" || Array.isArray(options))
+		throw new Error(`Invalid options type for ${stateKey} state.reset(). Please ensure the passed options are an object`);
+
+	return Object.assign({}, defaultResetStateOptions, options);
 }
 
 const confirmGetStateOptionsAreValid = (options, stateKey) => {
