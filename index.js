@@ -70,16 +70,16 @@ const createReducer = (stateKey, initialState) => (
 
 const createState = stateKey => {
 	return {
-		update: createUpdateState(stateKey),
+		set: createSetState(stateKey),
 		get: createGetState(stateKey),
 		reset: createResetState(stateKey)
 	}
 }
 
-const createUpdateState = stateKey => payload => {
+const createSetState = stateKey => payload => {
 
 	if (!store)
-		return handleStoreNotSetError(`state.update() for ${stateKey}`);
+		return handleStoreNotSetError(`state.set() for ${stateKey}`);
 
 	const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
 	if (invalidKeysInPayload.length)
@@ -341,5 +341,5 @@ const throwInvalidGetStateOptionsError = (stateKey, message) => {
 }
 
 const handleGivenInvalidKeysError = (invalidKeysInPayload, payload, stateKey) => {
-	console.warn(`Redux-Honey: \n Could not call state.update() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
+	console.warn(`Redux-Honey: \n Could not call state.set() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 }

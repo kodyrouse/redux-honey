@@ -51,7 +51,7 @@ Call ```addHoney(stateKey, initialState)``` to create a new piece of state
 
 ### Returns
 - **reducer** - *(function)* - never called directly. Export out of the file to pass into *combineReducers()*
-- **state** - *(object)* - an object containing the methods used to get, update, and reset this piece of state
+- **state** - *(object)* - an object containing the methods used to get, set, and reset this piece of state
 
 Example:
 ```js
@@ -75,7 +75,7 @@ export default reducer;
 
 ## state
 
-The returned ```state``` is an object that contains three methods: ```update```, ```get```, and ```reset```.
+The returned ```state``` is an object that contains three methods: ```get```, ```set```, and ```reset```.
  
 ```js
 
@@ -83,18 +83,18 @@ The returned ```state``` is an object that contains three methods: ```update```,
 state.get();
 
 // Updates state
-state.update();
+state.set();
 
 // Reset back to the initialState that was passed in addHoney
 state.reset();
 ```
 
-## state.update(payload)
+## state.set(payload)
 
-Call ```state.update(payload)``` to update its state
+Call ```state.set(payload)``` to set its state
 
 ### Arguments
-- **payload** *(required)* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to update your state
+- **payload** *(required)* - object - the object that defines the changes you want to make to your store. You can pass one or more key-value pairs to set your state
 
 ### Returns
 *null*
@@ -122,18 +122,18 @@ export default reducer;
 export const updateFavPlugin = selectedFavPlugin => {
 
  // updates state's favPlugin and isStateUpdated
- state.update({ favPlugin: selectedFavPlugin, isStateUpdated: true });
+ state.set({ favPlugin: selectedFavPlugin, isStateUpdated: true });
 }
 ```
 
  
 #### Side Note
-As a safety check when calling ```state.update()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience.
+As a safety check when calling ```state.set()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience.
 
  
 ```js
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
-state.update({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
+state.set({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
 ```
  
  
@@ -295,7 +295,7 @@ export default reducer;
 export const showFunStuffAction = async () => {
 	
  // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
- state.update({ isFetching: true });
+ state.set({ isFetching: true });
 
  // wait() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
@@ -332,7 +332,7 @@ export default reducer;
 
 export const resetStateExcept = async () => {
 
- state.update({ loveProgramming: true, favPlugin: "I'm lying" });
+ state.set({ loveProgramming: true, favPlugin: "I'm lying" });
 
 
  // Resets state back to original state except it keeps the current value for "loveProgramming"
@@ -383,7 +383,7 @@ export default reducer;
 export const showFunStuffAction = async () => {
 	
  // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
- state.update({ isSigningOut: true });
+ state.set({ isSigningOut: true });
 
  // For fun because why not :)
  await wait(1000);

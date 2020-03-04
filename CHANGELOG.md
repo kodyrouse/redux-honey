@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+#### **3.0.0**
+- Changed ```state.update``` to ```state.set``` due to request. This is more consistent with the get / set approach to state.
+
 #### **2.2.0**
 - Added an option ```keepKeyValues``` for ```state.reset()``` to allow users to reset a piece state back to its original initialState while keeping certain pass key-values in their current state
 
