@@ -245,7 +245,7 @@ const getRootStateItemByStateKey = stateKey => (
 const getStatePieceWithKey = (state, key, options) => ((keyIsPropertyOnArrayObject(key) && options.getItemIndex)
 	? getIndexOfArrayItem(state, key)
 	: keyIsPropertyOnArrayObject(key)
-	? getArrayItemByPropertKey(state, key)
+	? getArrayItemByPropertyKey(state, key)
 	: (keyIsIndexForArrayItem(key))
 	? getArrayItemByIndex(state, key)
 	: state[key]
@@ -259,7 +259,7 @@ const keyIsPropertyOnArrayObject = key => (
 	keyIsIndexForArrayItem(key) && (isNaN(key.slice(1, -1)))
 )
 
-const getIndexOfArrayItem =(state, key) => {
+const getIndexOfArrayItem = (state, key) => {
 
 	if (!Array.isArray(state))
 		throw new Error("Could not get index of item from array - parent state piece is not an array");
@@ -288,14 +288,14 @@ const getArrayItemByIndex = (state, key) => {
 	return state[index];
 }
 
-const getArrayItemByPropertKey = (state, key) => {
+const getArrayItemByPropertyKey = (state, key) => {
 
 	if (!Array.isArray(state))
 		throw new Error("Could not get item from array - parent state piece is not an array");
 
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
-	return state.find(stateItem => stateItem[propertyKey] === propertyValue);
+	return state.find(stateItem => stateItem[propertyKey] == propertyValue);
 }
 
 const setGetStateOptions = (options = {}, stateKey) => {

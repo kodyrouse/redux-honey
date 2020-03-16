@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **3.0.1**
+- Bug Fix: fixed issue with `state.get()` with int-like strings not finding item in array
+
 #### **3.0.0**
 - Changed ```state.update``` to ```state.set``` due to request. This is more consistent with the get / set approach to state.
 

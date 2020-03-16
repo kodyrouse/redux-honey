@@ -17,10 +17,7 @@ const deepCloneObject = object => {
 	const objectKeys = Object.keys(object);
 
 	objectKeys.forEach(key => {
-
 		const priorVal = object[key];
-
-		// Either recursively deep clones nested object / array or copies object value for new key value
 		const newValue = copyValue(priorVal);
 		newObject[key] = newValue;
 	});
