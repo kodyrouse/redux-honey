@@ -1,6 +1,24 @@
 
 # ChangeLog
 
+### **4.0.0**
+This version is an attempt to both further mature this plugin as well as start to increase capabilities of the react-redux method ```connect()```.
+- ```createHoneyPot``` no longer needs a redux store passed into it, but just the states created with ```addHoney```
+- ```extract``` is added to replace the use of the react-redux method ```connect()```. It adds a wrapper around ```connect()``` to check if the state pieces being extracted exist to prevent uncaught bugs when changing state
+- 
+- ```HoneyProvider``` is a component to replace ```Provider``` from ```react-redux```
+
+/***
+* Notable Changes
+
+
+- No longer need to pass in a redux store, it's built for you in createHoneyPot
+- A reducer is no longer returned && isn't needed to kick out - you just have to add your state pieces to the main store
+- A new "extract" method that tells you if what you're asking for doesn't exist on the state
+- shallow-cloned copies are not returned by default as this doesn't make sense
+- use of "immer" to prevent state updates
+***/
+
 ### **3.0.1**
 - Bug Fix: fixed issue with `state.get()` with int-like strings not finding item in array
 

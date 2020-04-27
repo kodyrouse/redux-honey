@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
+    "immer": "^6.0.3",
+    "react": "^16.8.6",
+    "react-redux": "^5.0.6",
     "redux": "^4.0.5"
   },
   "devDependencies": {

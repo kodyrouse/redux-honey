@@ -1,5 +1,9 @@
+import { createStore, combineReducers } from "redux";
+import produce from "immer";
 import deepClone from "./src/utils/deepClone";
 import wait from "./src/utils/wait";
+import extract from "./src/extract";
+import createHoneyProvider from "./src/createHoneyProvider";
 
 
 
@@ -9,7 +13,6 @@ let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
 
 const defaultGetStateOptions = {
-	returnOriginal: false,
 	getItemIndex: false,
 	deepClone: false
 }
@@ -20,15 +23,19 @@ const defaultResetStateOptions = {
 
 
 
-export const createHoneyPot = injectedStore => {
 
-	if (!canInjectStore(injectedStore))
-		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - passed store is not a redux store.`);
 
-	store = injectedStore;
+
+const createHoneyPot = (combinedState) => {
+
+	if (!isCombinedStateValid(combinedState))
+		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
+
+	store = createStore(getRootReducer(combinedState));
+	return createHoneyProvider(store);
 }
 
-export const addHoney = (stateKey, initialState) => {
+const addHoney = (stateKey, initialState) => {
 
 	if (!isUniqueAndValidStateKey(stateKey))
 		return console.warn(`Redux-Honey: \n Unable to call addHoney() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
@@ -36,13 +43,16 @@ export const addHoney = (stateKey, initialState) => {
 	addStateKeyToStateKeys(stateKey);
 	addInitialStateToInitialStates(stateKey, initialState);
 
-	return { 
-		reducer: createReducer(stateKey, initialState),
-		state: createState(stateKey)
+	return {
+		set: createSetState(stateKey),
+		get: createGetState(stateKey),
+		reset: createResetState(stateKey),
+		__stateKey: stateKey,
+		__reducer: createReducer(stateKey, initialState)
 	}
 }
 
-export const resetStoreToInitialState = () => {
+const resetStoreToInitialState = () => {
 
 	if (!store)
 		return handleStoreNotSetError("resetStoreToInitialState()");
@@ -50,31 +60,46 @@ export const resetStoreToInitialState = () => {
 	store.dispatch({ type: RESET_STORE });
 }
 
-export { wait };
+export {
+	createHoneyPot,
+	addHoney,
+	extract,
+	wait,
+	resetStoreToInitialState
+};
 
 
 
+const getRootReducer = (combinedState) => {
 
+	const reducers = {};
 
+	Object.keys(combinedState).forEach((stateKey, index) => {
 
+		const state = combinedState[stateKey];
 
+		if (!state.__reducer)
+			return console.log(`Redux-Honey: \n Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
+
+		reducers[stateKey] = state.__reducer;
+	});
+
+	return combineReducers(reducers);
+}
 
 const createReducer = (stateKey, initialState) => (
 	(state = initialState, { type, payload }) => ((shouldUpdateState(type, stateKey))
-		? Object.assign({}, state, payload)
+		? updateState(state, payload)
 		: (type === RESET_STORE)
 		? deepClone(initialState)
 		: state
 	)
 )
 
-const createState = stateKey => {
-	return {
-		set: createSetState(stateKey),
-		get: createGetState(stateKey),
-		reset: createResetState(stateKey)
-	}
-}
+const updateState = baseState => produce(baseState, draftState => ({
+  ...draftState,
+  ...payload
+}));
 
 const createSetState = stateKey => payload => {
 
@@ -107,11 +132,9 @@ const createGetState = stateKey => (string, options) => {
 			state = getStatePieceWithKey(state, key, options);
 		});
 
-		return (options.returnOriginal)
-			? state
-			: (options.deepClone)
+		return (options.deepClone)
 			? deepClone(state)
-			: cloneState(state);
+			: state;
 	} catch(error) {
 		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}`);
 	}
@@ -161,8 +184,8 @@ const shouldUpdateState = (type, stateKey) => (
 	type === stateKey
 );
 
-const canInjectStore = store => (
-	store && typeof store === "object" && store.getState && store.dispatch
+const isCombinedStateValid = combinedState => (
+	combinedState && typeof combinedState === "object"
 )
 
 const handleStoreNotSetError = uncalledMethodName => {
@@ -183,25 +206,6 @@ const getPropertyKeyAndValue = key => {
 	}
 }
 
-const cloneState = state => ((state == null || state === undefined)
-	? state
-	: Array.isArray(state)
-	? cloneArray(state)
-	: (typeof state === "object")
-	? Object.assign({}, state)
-	: state
-);
-
-const cloneArray = state => {
-
-	const clonedArray = [];
-
-	state.forEach(item => {
-		clonedArray.push(item);
-	});
-
-	return clonedArray;
-}
 
 const getKeyForInitialState = stateKey => `${stateKey}${RESET_STORE}`;
 
@@ -319,16 +323,10 @@ const setResetStateOptions = (options = {}, stateKey) => {
 
 const confirmGetStateOptionsAreValid = (options, stateKey) => {
 
-	const { returnOriginal, getItemIndex, deepClone } = options;
-
-	if (deepClone && returnOriginal)
-		throwInvalidGetStateOptionsError(stateKey, "you have deepClone && returnOriginal set to true, which is not possible");
+	const { getItemIndex, deepClone } = options;
 
 	if (getItemIndex && deepClone)
 		throwInvalidGetStateOptionsError(stateKey, "you have deepClone && getItemIndex set to true, which is not possible");
-
-	if (getItemIndex && returnOriginal)
-		throwInvalidGetStateOptionsError(stateKey, "you have returnOriginal && getItemIndex set to true, which is not possible");
 
 	Object.keys(options).forEach(option => {
 		if (typeof defaultGetStateOptions[option] === "undefined")
