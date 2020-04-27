@@ -100,10 +100,11 @@ const createReducer = (stateKey, initialState) => (
 	)
 )
 
-const updateState = baseState => produce(baseState, draftState => ({
-  ...draftState,
-  ...payload
-}));
+const updateState = (baseState, payload) => produce(baseState, draftState => {
+	Object.keys(payload).forEach(key => {
+		draftState[key] = payload[key];
+	});
+});
 
 const createSetState = stateKey => payload => {
 
