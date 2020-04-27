@@ -73,9 +73,9 @@ export {
 const getRootReducer = (combinedState) => {
 
 	if (Object.keys(combinedState).length === 0)
-		console.warn(`Redux-Honey: No state pieces were passed into createHoneyPot. Please ensure you pass in an object of state pieces created with the addHoney() method.`);
+		console.warn(`Redux-Honey: No state pieces were passed into createHoneyPot(). Please ensure you pass in an object of state pieces created with the addHoney() method.`);
 
-	const reducers = {};
+	const rootReducer = {};
 
 	Object.keys(combinedState).forEach((stateKey, index) => {
 
@@ -84,11 +84,11 @@ const getRootReducer = (combinedState) => {
 		if (!state.__reducer)
 			return console.warn(`Redux-Honey: \n Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
 
-		reducers[stateKey] = state.__reducer;
-		delete reducers[stateKey].__reducer;
+		rootReducer[stateKey] = state.__reducer;
+		delete rootReducer[stateKey].__reducer;
 	});
 
-	return combineReducers(reducers);
+	return combineReducers(rootReducer);
 }
 
 const createReducer = (stateKey, initialState) => (
