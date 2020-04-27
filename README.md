@@ -1,12 +1,13 @@
 # 🍯 Redux-Honey 🍯
-A simple, fast plugin that makes it *a lot* sweeter to work with advanced redux 🥰
+A plugin that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store quickly becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
 
 # Benefits To Using Redux-Honey
-- Reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
-- No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements
+- Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
+- No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements for reducers
+- Safety checks & warnings to prevent accidental updates && ```extract``` state pieces that don't exist
 - Built-in methods to ```state.reset()``` and ```resetStoreToInitialState```
 - Allows for simplier usage of asynchronous updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
@@ -21,23 +22,30 @@ yarn add redux-honey
 ```
 
 # Initialize
-Pass your store into ```createHoneyPot``` at creation:
+Call ```createHoneyPot``` and pass in an object of all of your created state pieces:
 
 ```js
-import { createStore, combineReducers } from "redux";
-import { createHoneyPot } from "redux-honey";
-import funWithReduxHoneyReducer from "./funWithReduxHoneyReducer";
+import { createHoneyPot, addHoney } from "redux-honey";
 
-const combinedReducers = combineReducers({
- funWithReduxHoneyReducer
+
+const funWithReduxHoney = addHoney("funWithReduxHoney", {
+ isFun: true,
+ favFood: "pizza"
 });
 
-const store = createStore(combinedReducers);
+// Calling "createHoneyPot" creates your redux honey store
+const HoneyPot = createHoneyPot({
+ funWithReduxHoney
+});
 
-// Pass your store into createHoneyPot to initialize the magic
-createHoneyPot(store);
 
-export default store;
+// Wrap your App with the <HoneyPot> component like so
+ReactDOM.render(
+ <HoneyPot>
+  <App />
+ </HoneyPot>,
+ document.getElementById('root')
+);
 ```
 
 
@@ -50,26 +58,21 @@ Call ```addHoney(stateKey, initialState)``` to create a new piece of state
 - **initialState** *(required)* - object that defines the stucture of this piece of your store
 
 ### Returns
-- **reducer** - *(function)* - never called directly. Export out of the file to pass into *combineReducers()*
 - **state** - *(object)* - an object containing the methods used to get, set, and reset this piece of state
 
 Example:
 ```js
-// This is funWithReduxHoneyReducer.js
 
 import { addHoney } from "redux-honey";
 
-// The initialState for this piece of state
-const initialState = {
+// addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
+const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favPlugin: "redux-honey"
-};
+});
 
-// addHoney() returns an object with its reducer and a state object
-const { reducer, state } = addHoney("funWithReduxHoney", initialState);
-
-// Never called directly - exported out to pass into combineReducers() when instatiating your store
-export default reducer;
+// exported to be added passed into the createHoneyPot method
+export default state;
 ```
 
 
@@ -102,33 +105,24 @@ Call ```state.set(payload)``` to set its state
 Example:
 
 ```js
-// This is funWithReduxHoneyReducer.js
-
 import { addHoney } from "redux-honey";
 
-// The initialState for this piece of state
-const initialState = {
+// addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
+const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
- favPlugin: "redux-honey",
- isStateUpdated: false
-};
+ favPlugin: ""
+});
 
-const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+// exported to be added passed into the createHoneyPot method
+export default state;
 
-// Never called directly - exported out to pass into combineReducers() when instatiating your store
-export default reducer;
-
-// Called in a react component
-export const updateFavPlugin = selectedFavPlugin => {
-
- // updates state's favPlugin and isStateUpdated
- state.set({ favPlugin: selectedFavPlugin, isStateUpdated: true });
-}
+// updates state's favPlugin and loveProgramming
+state.set({ favPlugin: "redux-honey", loveProgramming: true });
 ```
 
  
 #### Side Note
-As a safety check when calling ```state.set()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugim``` instead of ```favPlugin```. I don't speak from experience.
+As a safety check when calling ```state.set()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugimz``` instead of ```favPlugin```. I have unfortunately done this far too many times!
 
  
 ```js
@@ -171,51 +165,49 @@ This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
 state.get("bodyDetails athletics sportingAbilities");
 ```
 
-It's *that* simple! 🎉
-
-One of the (many!) cool aspects about ```state.get()``` is that, by default, it returns a shallow-cloned copy of the original piece of state. Now, you don't need to worry about using spread operators to prevent you from mutating any existing pieces of state - it's already done for you!
- 
+It's *that* simple! 🎉 
  
 ## state.get(keysString, options) -> item from array
 
-This is where ```state.get()``` gets *really* cool. Not only does it return a nice, shallow-cloned version of what you were looking for, but you can also get an item from an array in two different ways.
+This is where ```state.get()``` gets *really* cool. ```state.get()``` can return data for more than just a value for a passed key. It can also retrieve an item from an array in two different ways.
 
 An example to retrieve an item in an array based on index:
 
 ```js
+import { addHoney } from "redux-honey";
 
-// An example state structure
-{
- favPlugins: ["redux-honey", "redux", "react"]
-}
+const state = addHoney("funWithReduxHoney", {
+ loveProgramming: false,
+ favFoods: ["pizza", "chinese", "cookies"]
+});
 
 // This returns the item in the array at position 2 as long as it exists
-// favPluginAtPos3 would be "react"
-const favPluginAtPos2 = state.get("favPlugins [2]");
+// favFood2 returns "cookies"
+const favFood2 = state.get("favFoods [2]");
 ```
 
 An example to retrieve an item in an array with a matched key-value pair:
 
 ```js
+import { addHoney } from "redux-honey";
 
-// An example state structure
-{
+const state = addHoney("funWithReduxHoney", {
  name: "John Smith",
  friends: [
   {
-    id: 21,
-    name: "Tom Smith"
+   id: 21,
+   name: "Tom Smith"
   },
   {
-    id: 45,
-    name: "Johnny Boy"
+   id: 45,
+   name: "Johnny Boy"
   },
   {
-    id: 92,
-    name: "Carl Thompson"
+   id: 92,
+   name: "Carl Thompson"
   }
  ]
-}
+});
 
 // This returns the item in the array that has an id of 45
 // "friend" will be { id: 45, name: "Johnny Boy" }
@@ -230,38 +222,35 @@ Now *that* is pretty freakin cool. 🤓
 
 ### Options
 
-**returnOriginal** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to return the original, uncloned copy of your state
 **getItemIndex** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```getItemIndex``` is set to `true`, ```returnOriginal``` nor ```deepClone``` can be set to `true`.
 **deepClone** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```deepClone``` is set 
 
 ```js
-// An example state structure
-{
+import { addHoney } from "redux-honey";
+
+const state = addHoney("funWithReduxHoney", {
  name: "John Smith",
  friends: [
   {
-    id: 21,
-    name: "Tom Smith"
+   id: 21,
+   name: "Tom Smith"
   },
   {
-    id: 45,
-    name: "Johnny Boy"
+   id: 45,
+   name: "Johnny Boy"
   },
   {
-    id: 92,
-    name: "Carl Thompson"
+   id: 92,
+   name: "Carl Thompson"
   }
  ]
-}
+});
 
-// Returns an uncloned array for sportingAbilities
-const friends = state.get("friends", { returnOriginal: true });
+// Returns 0, which is the index of the object in friends with the id = 21
+const tomSmithIndex = state.get("friends [id=21]", { getItemIndex: true });
 
 // Returns a deep-cloned version of the friend with id = 21
 const tomSmith = state.get("friends [id=21]", { deepClone: true });
-
-// Returns the index of the object in friends with the id = 21
-const tomSmithIndex = state.get("friends [id=21]", { getItemIndex: true });
 ```
  
 
@@ -280,22 +269,21 @@ Example:
 ```js
 import { addHoney, wait } from "redux-honey";
 
-const initialState = {...}
-
 
 // addHoney() returns an object with its reducer and its state object
-const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+const state = addHoney("funWithReduxHoney", {
+  isLoading: false,
+  isSaving: false
+});
 
-// Never called directly - exported out to pass into combineReducers() when instatiating your store
-export default reducer;
-
-
+// exported to be added passed into the createHoneyPot method
+export default state;
 
 
 export const showFunStuffAction = async () => {
 	
- // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
- state.set({ isFetching: true });
+ // Let components know you're loading data - You know, if you're into that stuff.
+ state.set({ isLoading: true });
 
  // wait() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
@@ -308,40 +296,78 @@ export const showFunStuffAction = async () => {
 
 Super simple!
 
-### Options
+## extract(mapHoneyToProps, Component)
+A method to bind state to react components. This is very similiar to the react-redux method ```connect()```, but ```extract()``` will throw warnings if you attempt to bind state pieces that don't exist.
 
-**keepKeyValues** - *(optional)* - array - An array of keys you would like to keep in their initial state while resetting the reset of the state
+### Arguments
+- **mapHoneyToProps** *(required)* - function - a function that outlines what state pieces you would like to use to pass as props inside your Component
+- **Component** *(required)* - React component
+
+### Returns
+An updated component with the passed props from calling the ```extract()``` method
 
 ```js
-import { addHoney } from "redux-honey";
+import React from "react";
+import { extract } from "redux-honey";
 
-const initialState = {
- loveProgramming: false,
- favPlugin: "redux-honey"
-};
+const UserProfile = ({ name, birthDay }) => (
+ <div>
+  <p>{name}</p>
+  <p>{birthDay}</p>
+ </div>
+)
 
+/*
+ user state structure
 
-// addHoney() returns an object with its reducer and its state object
-const { reducer, state } = addHoney("funWithReduxHoney", initialState);
+ user: {
+  name: "Steve Smith",
+  birthday: "June 19th 1990",
+  friends: [],
+  favSongs: []
+ }
+*/
 
-// Never called directly - exported out to pass into combineReducers() when instatiating your store
-export default reducer;
+// The method used to determine what state pieces you want passed as props
+const mapHoneyToProps = store => ({
+ name: store.user.name,
+ birthDay: store.user.birthDay
+});
 
-
-
-
-export const resetStateExcept = async () => {
-
- state.set({ loveProgramming: true, favPlugin: "I'm lying" });
-
-
- // Resets state back to original state except it keeps the current value for "loveProgramming"
- state.reset({
-  keepKeyValues: ["loveProgramming"]
- });
-}
+export default extract(mapHoneyToProps, UserProfile);
 ```
 
+To prevent unknown misspelling problems when using extract, redux-honey will throw a warning that something you were asking for doesn't exist on that state:
+
+```js
+import React from "react";
+import { extract } from "redux-honey";
+
+const UserProfile = ({ name, birthDay }) => (
+ <div>
+  <p>{name}</p>
+  <p>{birthDay}</p>
+ </div>
+)
+
+/*
+ user state structure
+
+ user: {
+  name: "Steve Smith",
+  birthday: "June 19th 1990",
+  friends: [],
+  favSongs: []
+ }
+*/
+
+// This will fail && will throw a warning that the key "friendz" doesn't exist on the user
+const mapHoneyToProps = store => ({
+ friendz: state.user.friendz
+});
+
+export default extract(mapHoneyToProps, UserProfile);
+```
  
 ## wait(duration)
 
@@ -370,19 +396,15 @@ Example:
 import { addHoney, resetStoreToInitialState } from "redux-honey";
 
 
-
 // addHoney() returns an object with its reducer and its state object
-const { reducer, state } = addHoney("funWithReduxHoney", initialState);
-
-// Never called directly - exported out to pass into combineReducers() when instatiating your store
-export default reducer;
-
-
+const state = addHoney("user", {
+ name: "Steve Smith",
+ isSigningOut: false
+});
 
 
 export const showFunStuffAction = async () => {
 	
- // Let components know you're fetching data - You know, if you're into that stuff. Batteries not included
  state.set({ isSigningOut: true });
 
  // For fun because why not :)
