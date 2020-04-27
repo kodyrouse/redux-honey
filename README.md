@@ -7,8 +7,8 @@ In a lot of ways, redux is *fantastic* at what it does. The problems begin to ar
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
 - No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements for reducers
-- Safety checks & warnings to prevent accidental updates && ```extract``` state pieces that don't exist
-- Built-in methods to ```state.reset()``` and ```resetStoreToInitialState```
+- Safety checks & warnings to prevent accidental state updates && state-binding for state that doesn't exist
+- Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 - Allows for simplier usage of asynchronous updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
 # Installation
@@ -22,7 +22,13 @@ yarn add redux-honey
 ```
 
 # Initialize
-Call ```createHoneyPot``` and pass in an object of all of your created state pieces:
+Call ```createHoneyPot``` to initialize your store. Pass in an object of all of your created state pieces
+
+### Arguments
+- **combinedState** *(required)* - object - An object that contains all states returned from calling ```addHoney()```
+
+### Returns
+- **HoneyPot** - *(component)* - a component used to wrap your application so all child components are able to use the ```extract()``` method
 
 ```js
 import { createHoneyPot, addHoney } from "redux-honey";

@@ -2,7 +2,8 @@
 # ChangeLog
 
 ### **4.0.0**
-This version is an attempt to both mature this plugin as well as further simplify its use in comparison to plain redux
+This version is an attempt to both mature this plugin as well as further simplify its use in comparison to plain redux.
+
 - ```createHoneyPot``` no longer needs a redux store passed into it. It now just accepts an object with with all of the states created with  ```addHoney```. This also returns a ```<HoneyPot></HoneyPot>``` component that has your built in store - this component is to replace ```Provider``` from ```react-redux```
 - ```extract``` is added to replace the use of the react-redux method ```connect()```. It adds a wrapper around ```connect()``` to check if the state pieces being extracted exist to prevent uncaught bugs when changing state
 
