@@ -126,12 +126,12 @@ const createGetState = stateKey => (string, options) => {
 	try {
 
 		options = setGetStateOptions(options, stateKey);
-
 		let state = getRootStateItemByStateKey(stateKey);
+
 		if (!canGetNestedStatePiecesWithString(string))
 			return state;
 
-		const keys = string.split(" ");
+		const keys = string.split(".");
 
 		keys.forEach(key => {
 			state = getStatePieceWithKey(state, key, options);

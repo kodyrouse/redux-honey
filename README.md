@@ -142,7 +142,7 @@ state.set({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
 Call ```state.get(keysString, options)``` to retrieve what you need from its state.
 
 ### Arguments
-- **keysString** *(optional)* - string - space-separated set of keys. If you want to get the entire state, pass no arguments for ```keysString```
+- **keysString** *(optional)* - string - period-separated set of keys. If you want to get the entire state, pass no arguments for ```keysString```
 - **options** *(optional)* - object - a set of options when calling ```state.get()```. Options are defined below.
 
 ### Returns
@@ -168,7 +168,7 @@ This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
 }
 
 // If I wanted to get the sportingAbilities array, you pass an in-order list of keys like so:
-state.get("bodyDetails athletics sportingAbilities");
+state.get("bodyDetails.athletics.sportingAbilities");
 ```
 
 It's *that* simple! 🎉 
@@ -189,7 +189,7 @@ const state = addHoney("funWithReduxHoney", {
 
 // This returns the item in the array at position 2 as long as it exists
 // favFood2 returns "cookies"
-const favFood2 = state.get("favFoods [2]");
+const favFood2 = state.get("favFoods.[2]");
 ```
 
 An example to retrieve an item in an array with a matched key-value pair:
@@ -217,10 +217,10 @@ const state = addHoney("funWithReduxHoney", {
 
 // This returns the item in the array that has an id of 45
 // "friend" will be { id: 45, name: "Johnny Boy" }
-const friend = state.get("friends [id=45]");
+const friend = state.get("friends.[id=45]");
 
 // This returns null because no object in the friends array has a name "Frank Sinatra"
-const emptyFriend = state.get("friends [name=Frank Sinatra]");
+const emptyFriend = state.get("friends.[name=Frank Sinatra]");
 ```
 
 Now *that* is pretty freakin cool. 🤓
@@ -253,10 +253,10 @@ const state = addHoney("funWithReduxHoney", {
 });
 
 // Returns 0, which is the index of the object in friends with the id = 21
-const tomSmithIndex = state.get("friends [id=21]", { getItemIndex: true });
+const tomSmithIndex = state.get("friends.[id=21]", { getItemIndex: true });
 
 // Returns a deep-cloned version of the friend with id = 21
-const tomSmith = state.get("friends [id=21]", { deepClone: true });
+const tomSmith = state.get("friends.[id=21]", { deepClone: true });
 ```
  
 

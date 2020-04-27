@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **4.1.0**
+
+- For improved clarity, the ```state.get()``` chain no longer uses a space-separated string but instead uses a ```.```
+
 ### **4.0.0**
 This version is an attempt to both mature this plugin as well as further simplify its use in comparison to plain redux.
 
