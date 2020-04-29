@@ -1,23 +1,25 @@
 {
   "name": "redux-honey",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Kody Rouse",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "immer": "^6.0.3",
-    "react": "^16.8.6",
-    "react-redux": "^5.0.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.8.6",
+    "react-redux": "^6.0.1",
     "redux": "^4.0.5"
   },
   "devDependencies": {
     "@babel/plugin-transform-arrow-functions": "^7.7.4",
     "@babel/preset-env": "^7.7.7",
+    "babel-core": "^6.26.3",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "jest": "^24.9.0"

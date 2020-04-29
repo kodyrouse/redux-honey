@@ -1,5 +1,4 @@
 import { createStore, combineReducers } from "redux";
-import produce from "immer";
 import deepClone from "./src/utils/deepClone";
 import wait from "./src/utils/wait";
 import extract from "./src/extract";
@@ -14,7 +13,7 @@ const RESET_STORE = "__rootStore/__RESET_STORE";
 
 const defaultGetStateOptions = {
 	getItemIndex: false,
-	deepClone: false
+	returnOriginal: false
 }
 
 const defaultResetStateOptions = {
@@ -85,7 +84,8 @@ const getRootReducer = (combinedState) => {
 			return console.warn(`Redux-Honey: \n Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
 
 		rootReducer[stateKey] = state.__reducer;
-		delete rootReducer[stateKey].__reducer;
+
+		delete state.__reducer;
 	});
 
 	return combineReducers(rootReducer);
@@ -100,11 +100,9 @@ const createReducer = (stateKey, initialState) => (
 	)
 )
 
-const updateState = (baseState, payload) => produce(baseState, draftState => {
-	Object.keys(payload).forEach(key => {
-		draftState[key] = payload[key];
-	});
-});
+const updateState = (state, payload) => (
+	Object.assign({}, state, payload)
+);
 
 const createSetState = stateKey => payload => {
 
@@ -137,9 +135,9 @@ const createGetState = stateKey => (string, options) => {
 			state = getStatePieceWithKey(state, key, options);
 		});
 
-		return (options.deepClone)
-			? deepClone(state)
-			: state;
+		return (options.returnOriginal)
+			? state
+			: deepClone(state);
 	} catch(error) {
 		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}`);
 	}
@@ -328,10 +326,10 @@ const setResetStateOptions = (options = {}, stateKey) => {
 
 const confirmGetStateOptionsAreValid = (options, stateKey) => {
 
-	const { getItemIndex, deepClone } = options;
+	const { getItemIndex, returnOriginal } = options;
 
-	if (getItemIndex && deepClone)
-		throwInvalidGetStateOptionsError(stateKey, "you have deepClone && getItemIndex set to true, which is not possible");
+	if (getItemIndex && returnOriginal)
+		throwInvalidGetStateOptionsError(stateKey, "you have returnOriginal && getItemIndex set to true, which is not possible");
 
 	Object.keys(options).forEach(option => {
 		if (typeof defaultGetStateOptions[option] === "undefined")
@@ -344,5 +342,5 @@ const throwInvalidGetStateOptionsError = (stateKey, message) => {
 }
 
 const handleGivenInvalidKeysError = (invalidKeysInPayload, payload, stateKey) => {
-	console.warn(`Redux-Honey: \n Could not call state.set() for ${stateKey}. Given payload contains keys that do not exist in the initialState for ${stateKey} - [${invalidKeysInPayload}]. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
+	console.warn(`Redux-Honey: \n Could not call state.set() for ${stateKey}. Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 }

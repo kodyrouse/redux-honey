@@ -7,12 +7,16 @@ export default (extractFunction, Component) => {
 
   return connect(store => {
 
-    const propsToPass = extractFunction(store);
+    const propsToReturn = extractFunction(store);
 
-    Object.keys(propsToPass).forEach(key => {
-      if (typeof propsToPass[key] === "undefined")
-        console.warn(`Redux-Honey: \n the key ${key} returned in the extract method doesn't exist on the given state`);
+    Object.keys(propsToReturn).forEach(key => {
+      if (typeof propsToReturn[key] === "undefined") {
+        console.warn(`Redux-Honey: \n You attempted to extract a value for the key "${key}" but it does not exist`);
+        console.warn(`Redux-Honey: \n The following extract() method failed for the component ${Component.name}: ${extractFunction}`);
+      }
     })
+
+    return propsToReturn;
 
   })(Component);
 }

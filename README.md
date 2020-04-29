@@ -228,8 +228,8 @@ Now *that* is pretty freakin cool. 🤓
 
 ### Options
 
-**getItemIndex** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```getItemIndex``` is set to `true`, ```returnOriginal``` nor ```deepClone``` can be set to `true`.
-**deepClone** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array. If ```deepClone``` is set 
+**getItemIndex** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array.
+**returnOriginal** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to recieve a non-copied version of that piece of state. By default, ```state.get()``` returns a deep-cloned version to allow for easy mutability.
 
 ```js
 import { addHoney } from "redux-honey";

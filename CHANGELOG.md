@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **4.2.0**
+
+- Fixed bugs with ```extract()``` and ```createHoneyPot()```
+
 ### **4.1.0**
 
 - For improved clarity, the ```state.get()``` chain no longer uses a space-separated string but instead uses a ```.```
