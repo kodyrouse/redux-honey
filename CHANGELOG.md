@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **4.2.1**
+
+- Fixed bugs with ```extract()``` on more complex state structures
+
 ### **4.2.0**
 
 - Fixed bugs with ```extract()``` and ```createHoneyPot()```

@@ -1,12 +1,13 @@
 import { createStore, combineReducers } from "redux";
 import deepClone from "./src/utils/deepClone";
 import wait from "./src/utils/wait";
-import extract from "./src/extract";
+import createExtract from "./src/createExtract";
 import createHoneyProvider from "./src/createHoneyProvider";
 
 
 
 let store = null;
+let extract = () => {};
 let initialStates = {};
 let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
@@ -31,6 +32,7 @@ const createHoneyPot = (combinedState) => {
 		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
 
 	store = createStore(getRootReducer(combinedState));
+	extract = createExtract(store);
 	return createHoneyProvider(store);
 }
 
