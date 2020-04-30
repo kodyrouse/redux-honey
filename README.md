@@ -1,5 +1,5 @@
 # 🍯 Redux-Honey 🍯
-A plugin that makes it *a lot* sweeter to work with advanced redux 🥰
+A library that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
 In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store quickly becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
@@ -74,7 +74,7 @@ import { addHoney } from "redux-honey";
 // addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
- favPlugin: "redux-honey"
+ favLibrary: "redux-honey"
 });
 
 // exported to be added passed into the createHoneyPot method
@@ -116,24 +116,24 @@ import { addHoney } from "redux-honey";
 // addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
- favPlugin: ""
+ favLibrary: ""
 });
 
 // exported to be added passed into the createHoneyPot method
 export default state;
 
-// updates state's favPlugin and loveProgramming
-state.set({ favPlugin: "redux-honey", loveProgramming: true });
+// updates state's favLibrary and loveProgramming
+state.set({ favLibrary: "redux-honey", loveProgramming: true });
 ```
 
  
 #### Side Note
-As a safety check when calling ```state.set()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favPlugimz``` instead of ```favPlugin```. I have unfortunately done this far too many times!
+As a safety check when calling ```state.set()```, your passed payload can't contain key-value pairs that didn't exist on the initialState passed into ```addHoney()```. This prevents you from accidentally mispelling a key. It also prevents you from going all 🤬🤬, breaking your keyboard when you didn't realize you accidentally spelled it ```favLibrarz``` instead of ```favLibrary```. I have unfortunately done this far too many times!
 
  
 ```js
 // This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
-state.set({ favPlugin: "redux-honey", isGoingToFailToUpdate: true });
+state.set({ favLibrary: "redux-honey", isGoingToFailToUpdate: true });
 ```
  
  
@@ -226,10 +226,10 @@ const emptyFriend = state.get("friends.[name=Frank Sinatra]");
 Now *that* is pretty freakin cool. 🤓
  
 
-### Options
+### Options *(state.get())*
 
 **getItemIndex** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to receive an item index in an array.
-**returnOriginal** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to recieve a non-copied version of that piece of state. By default, ```state.get()``` returns a deep-cloned version to allow for easy mutability.
+**returnOriginal** - *(optional)* - boolean - defaults to `false`. Set to `true` when calling `state.get()` to recieve a non-cloned version of that piece of state. By default, ```state.get()``` returns a deep-cloned version to allow for easy mutability.
 
 ```js
 import { addHoney } from "redux-honey";
@@ -255,8 +255,8 @@ const state = addHoney("funWithReduxHoney", {
 // Returns 0, which is the index of the object in friends with the id = 21
 const tomSmithIndex = state.get("friends.[id=21]", { getItemIndex: true });
 
-// Returns a deep-cloned version of the friend with id = 21
-const tomSmith = state.get("friends.[id=21]", { deepClone: true });
+// Returns an uncloned version of the friend with id = 21
+const tomSmith = state.get("friends.[id=21]", { returnOriginal: true });
 ```
  
 
@@ -301,6 +301,25 @@ export const showFunStuffAction = async () => {
 ```
 
 Super simple!
+
+### Options *(state.reset())*
+
+**keepKeyValues** - *(optional)* - array - This allows you to call ```state.reset()``` but keep current values of certain keys.
+
+```js
+const state = addHoney("funWithReduxHoney", {
+  isLoading: false,
+  isSaving: false,
+  favLibrary: "redux-honey",
+  name: "Bob Barker"
+});
+
+
+state.set({ name: "Steve Smith", isLoading: true, favLibrary: "" });
+
+// resets state back to its initialState except for "name"
+state.reset({ keepKeyValues: ["name"] });
+```
 
 ## extract(mapHoneyToProps, Component)
 A method to bind state to react components. This is very similiar to the react-redux method ```connect()```, but ```extract()``` will throw warnings if you attempt to bind state pieces that don't exist.

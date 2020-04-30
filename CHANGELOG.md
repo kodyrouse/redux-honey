@@ -1,6 +1,12 @@
 
 # ChangeLog
 
+### **4.2.2**
+
+- Fixed bugs with ```extract()``` and improved warning messages
+- Fixed bug with ```keepKeyValues``` in ```state.reset()```
+- Updated README.md
+
 ### **4.2.1**
 
 - Fixed bugs with ```extract()``` on more complex state structures
@@ -26,7 +32,7 @@ This version is an attempt to both mature this plugin as well as further simplif
 - Changed ```state.update``` to ```state.set``` due to request. This is more consistent with the get / set approach to state.
 
 #### **2.2.0**
-- Added an option ```keepKeyValues``` for ```state.reset()``` to allow users to reset a piece state back to its original initialState while keeping certain pass key-values in their current state
+- Added an option ```keepKeyValues``` for ```state.reset()```. This enables the ability to reset a piece state back to its original initialState while keeping certain pass key-values in their current state
 
 #### **2.1.2**
 - Removed error warning when calling ```state.get()``` to retrieve an item an array with a given key-value pair that doesn't exist. I found this to be unexpected behavior and it now returns ```undefined``` if one was not found in the array, which is typical behavior with the ```.find``` method for arrays

@@ -29,7 +29,7 @@ const defaultResetStateOptions = {
 const createHoneyPot = (combinedState) => {
 
 	if (!isCombinedStateValid(combinedState))
-		return console.warn(`Redux-Honey: \n Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
+		return console.error(`Redux-Honey: \n Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
 
 	store = createStore(getRootReducer(combinedState));
 	extract = createExtract(store);
@@ -39,7 +39,7 @@ const createHoneyPot = (combinedState) => {
 const addHoney = (stateKey, initialState) => {
 
 	if (!isUniqueAndValidStateKey(stateKey))
-		return console.warn(`Redux-Honey: \n Unable to call addHoney() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
+		return console.error(`Redux-Honey: \n Unable to call addHoney() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
 
 	addStateKeyToStateKeys(stateKey);
 	addInitialStateToInitialStates(stateKey, initialState);
@@ -74,7 +74,7 @@ export {
 const getRootReducer = (combinedState) => {
 
 	if (Object.keys(combinedState).length === 0)
-		console.warn(`Redux-Honey: No state pieces were passed into createHoneyPot(). Please ensure you pass in an object of state pieces created with the addHoney() method.`);
+		console.error(`Redux-Honey: No state pieces were passed into createHoneyPot(). Please ensure you pass in an object of state pieces created with the addHoney() method.`);
 
 	const rootReducer = {};
 
@@ -83,7 +83,7 @@ const getRootReducer = (combinedState) => {
 		const state = combinedState[stateKey];
 
 		if (!state.__reducer)
-			return console.warn(`Redux-Honey: \n Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
+			return console.error(`Redux-Honey: \n Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
 
 		rootReducer[stateKey] = state.__reducer;
 
@@ -141,7 +141,7 @@ const createGetState = stateKey => (string, options) => {
 			? state
 			: deepClone(state);
 	} catch(error) {
-		console.warn(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}`);
+		console.error(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}. Please ensure the string passed is a dot-separated string`);
 	}
 }
 
@@ -194,7 +194,7 @@ const isCombinedStateValid = combinedState => (
 )
 
 const handleStoreNotSetError = uncalledMethodName => {
-	console.warn(`Redux-Honey: \n Unable to call ${uncalledMethodName} - please ensure you pass your store into addToHoneyPot() correctly when instantiating your store.`);
+	console.error(`Redux-Honey: \n Unable to call ${uncalledMethodName} - the store was not set`);
 }
 
 const getPropertyKeyAndValue = key => {
@@ -226,6 +226,8 @@ const getObjectValuesForKeys = (stateKey, keepKeyValues) => {
 		else
 			console.warn(`Redux-Honey: \n Given keepKeyValues key -> ${key} for state.reset() does not exist for ${stateKey}. The key -> ${key} is likely misspelled or it needs to be added to the passed initialState when calling addHoney().`);
 	});
+
+	return stateToKeep;
 }
 
 const checkIfPayloadKeysExistInState = (stateKey, payload) => {
