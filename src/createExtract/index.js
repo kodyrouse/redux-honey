@@ -58,7 +58,7 @@ export default store => (mapHoneyToProps, WrappedComponent) => {
 
     render: function() {
       return (
-        React.createElement(WrappedComponent, { ...this.props, ...this.subscribedState })
+        React.createElement(WrappedComponent, Object.assign({}, this.props, this.subscribedState))
       )
     }
   })

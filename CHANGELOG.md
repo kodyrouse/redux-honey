@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **5.0.1**
+- Removed spread operator use in ```extract``` method
+
 ### **5.0.0**
 
 - After repeatedly having issues with ```extract```, I decided it was best to get away from wrapping ```react-redux```. This ended up simplifying use, removing the need to wrap your application in ```<HoneyPot></HoneyPot>```
@@ -57,14 +60,10 @@ This version is an attempt to both mature this plugin as well as further simplif
 - Added method ```wait``` for easy use of asynchronous actions 
 
 #### **1.0.1**
-- restructured folder and moved deepClone into its own
+- restructured folder and moved deepClone into its own file
 - Added option for ```getState()``` to return the original copy of the retrieved state
 - Added more console warnings for error clarity
 
 #### **1.0.0**
 
-- First version 🎉
-- Added ability to use
-- Upcoming changes
-- Ability to trigger entire store to a given state
-- Ability to make initialState pieces type-safe so I can't turn a boolean into a string by accident
+- First version release! 🎉
