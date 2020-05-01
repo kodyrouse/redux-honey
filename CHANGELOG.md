@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **5.0.0**
+
+- After repeatedly having issues with ```extract```, I decided it was best to get away from wrapping ```react-redux```. This ended up simplifying use, removing the need to wrap your application in ```<HoneyPot></HoneyPot>```
+
 ### **4.2.2**
 
 - Fixed bugs with ```extract()``` and improved warning messages

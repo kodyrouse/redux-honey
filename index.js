@@ -2,12 +2,10 @@ import { createStore, combineReducers } from "redux";
 import deepClone from "./src/utils/deepClone";
 import wait from "./src/utils/wait";
 import createExtract from "./src/createExtract";
-import createHoneyProvider from "./src/createHoneyProvider";
 
 
 
 let store = null;
-let extract = () => {};
 let initialStates = {};
 let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
@@ -21,6 +19,24 @@ const defaultResetStateOptions = {
 	keepKeyValues: []
 }
 
+/**
+* This is just a default extract method set to throw an error that the state was not set yet
+* It will only happen if the root component is imported before the store or the store isn't imported at all
+**/
+let hasSeenExtractionWarning = false;
+let extract = (mapHoneyToProps, WrappedComponent) => {
+
+	if (!hasSeenExtractionWarning)
+    console.error(`Redux-Honey: \n Unable to use the extract method - the store has not been created yet. This likley happened because components that use extract() were imported before the store was. Please ensure the store returned from calling "createHoneyPot" is imported before your root component`);
+
+  hasSeenExtractionWarning = true;
+	return WrappedComponent
+};
+
+
+
+
+
 
 
 
@@ -33,7 +49,6 @@ const createHoneyPot = (combinedState) => {
 
 	store = createStore(getRootReducer(combinedState));
 	extract = createExtract(store);
-	return createHoneyProvider(store);
 }
 
 const addHoney = (stateKey, initialState) => {

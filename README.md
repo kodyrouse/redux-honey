@@ -5,11 +5,10 @@ A library that makes it *a lot* sweeter to work with advanced redux 🥰
 In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store quickly becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
 
 # Benefits To Using Redux-Honey
-- Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*)
-- No need for top-file action types like **WHY_AM_I_YELLING** or ugly switch case statements for reducers
+- Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
+- No need for ```react-redux```, ```redux-thunk```, or ```redux-saga```
 - Safety checks & warnings to prevent accidental state updates && state-binding for state that doesn't exist
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
-- Allows for simplier usage of asynchronous updates with ```wait()```, removing the need for middleware like ```redux-thunk``` and ```redux-saga```
 
 # Installation
 
@@ -28,28 +27,28 @@ Call ```createHoneyPot``` to initialize your store. Pass in an object of all of 
 - **combinedState** *(required)* - object - An object that contains all states returned from calling ```addHoney()```
 
 ### Returns
-- **HoneyPot** - *(component)* - a component used to wrap your application so all child components are able to use the ```extract()``` method
+- null
 
 ```js
 import { createHoneyPot, addHoney } from "redux-honey";
 
 
+// "addHoney" creates a new piece of state that can be added to "createHoneyPot"
 const funWithReduxHoney = addHoney("funWithReduxHoney", {
  isFun: true,
  favFood: "pizza"
 });
 
 // Calling "createHoneyPot" creates your redux honey store
-const HoneyPot = createHoneyPot({
+createHoneyPot({
  funWithReduxHoney
 });
 
 
-// Wrap your App with the <HoneyPot> component like so
+// No need to wrap your main <App /> component in anything like <Provider></Provider>
+// Ensure that your store is imported before your main rendered component (<App /> in this case)
 ReactDOM.render(
- <HoneyPot>
   <App />
- </HoneyPot>,
  document.getElementById('root')
 );
 ```
@@ -388,7 +387,7 @@ const UserProfile = ({ name, birthDay }) => (
 
 // This will fail && will throw a warning that the key "friendz" doesn't exist on the user
 const mapHoneyToProps = store => ({
- friendz: state.user.friendz
+ friendz: store.user.friendz
 });
 
 export default extract(mapHoneyToProps, UserProfile);

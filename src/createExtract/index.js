@@ -1,22 +1,66 @@
-import { connect } from "react-redux";
+import React from "react";
+import createReactClass from "create-react-class";
+import isEqual from "react-fast-compare";
 
-export default store => (extractFunction, Component) => {
+export default store => (mapHoneyToProps, WrappedComponent) => {
 
-  if (typeof extractFunction !== "function")
-    return console.warn("Redux-Honey: \n the given method passed to extract was not a function. Please ensure the first parameter used in the extract method is a function");
-
-  if (!store) {
-    console.error("Redux-Honey: \n Unable to call the extract method because the store was not set yet. Please ensure you're wrapping your application in <HoneyProvider></HoneyProvider> as well as ensure that your store is imported before your main application");
-    return Component
+  if (typeof mapHoneyToProps !== "function") {
+    console.warn(`Redux-Honey: \n the given mapHoneyToProps for component <${WrappedComponent.name}> was not a function. Please ensure the first parameter used in the extract method is a function`);
+    return WrappedComponent;
   }
 
-  const propsToReturn = extractFunction(store.getState());
+  return createReactClass({
 
-  Object.keys(propsToReturn).forEach(key => {
-    if (typeof propsToReturn[key] === "undefined") {
-      console.warn(`Redux-Honey: \n You attempted to extract a value for the key "${key}" for the component ${Component.name} but it returned undefined`);
+    subscribedState: {},
+
+    getInitialState: function() {
+      this.subscribedState =  mapHoneyToProps(store.getState());
+      return null;
+    },
+
+    validateInitialSubscribedState: function() {
+
+      const honeyRequested = mapHoneyToProps(store.getState());
+
+      Object.keys(honeyRequested).forEach(key => {
+        if (typeof honeyRequested[key] === "undefined") {
+          console.warn(`Redux-Honey: \n You attempted to extract a value for the key "${key}" for the component <${WrappedComponent.name}> but it returned undefined`);
+        }
+      });
+    },
+
+    handleStoreChange: function() {
+      if (this.shouldUpdate())
+        this.forceUpdate();
+    },
+
+    shouldUpdate: function() {
+
+      const updatedSubscribedState = mapHoneyToProps(store.getState());
+
+      if (!isEqual(this.subscribedState, updatedSubscribedState)) {
+        this.subscribedState = updatedSubscribedState;
+        return true;
+      }
+
+      return false;
+    },
+
+    componentDidMount: function() {
+      this.subscribedState = mapHoneyToProps(store.getState());
+      this.unsubscribe = store.subscribe(this.handleStoreChange);
+      this.validateInitialSubscribedState();
+    },
+    
+    componentWillUnmount: function() {
+      this.unsubscribe();
+    },
+
+    render: function() {
+      return (
+        React.createElement(WrappedComponent, { ...this.props, ...this.subscribedState })
+      )
     }
-  });
-
-  return connect(extractFunction)(Component);
+  })
 }
+
