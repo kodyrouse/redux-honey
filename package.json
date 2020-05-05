@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,6 @@
   "dependencies": {
     "@babel/polyfill": "^7.7.0",
     "create-react-class": "^15.6.3",
-    "immer": "^6.0.3",
     "react": "^16.13.1",
     "react-dom": "^16.8.6",
     "react-fast-compare": "^3.0.2",
@@ -35,6 +34,7 @@
     "async redux",
     "redux-thunk",
     "redux-saga",
-    "redux plugin"
+    "redux plugin",
+    "react-redux"
   ]
 }

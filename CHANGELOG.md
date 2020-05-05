@@ -2,6 +2,9 @@
 # ChangeLog
 
 ### **5.0.1**
+- Added improved error message handing
+
+### **5.0.1**
 - Removed spread operator use in ```extract``` method
 
 ### **5.0.0**

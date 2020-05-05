@@ -5,10 +5,15 @@ import createExtract from "./src/createExtract";
 
 
 
+
 let store = null;
 let initialStates = {};
 let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
+
+const createHoneyPotOptions = {
+	typeSafe: false
+}
 
 const defaultGetStateOptions = {
 	getItemIndex: false,
@@ -27,22 +32,18 @@ let hasSeenExtractionWarning = false;
 let extract = (mapHoneyToProps, WrappedComponent) => {
 
 	if (!hasSeenExtractionWarning)
-    console.error(`Redux-Honey: \n Unable to use the extract method - the store has not been created yet. This likley happened because components that use extract() were imported before the store was. Please ensure the store returned from calling "createHoneyPot" is imported before your root component`);
+    console.error(`Redux-Honey: \n Unable to use the extract method - the store has not been created. This likley happened because createHoneyPot() failed or components that use extract() were imported before the store was created. Please ensure the store returned from calling "createHoneyPot" is imported before your root component`);
 
   hasSeenExtractionWarning = true;
-	return WrappedComponent
+	return WrappedComponent;
 };
 
 
 
-
-
-
-
-
-
-
 const createHoneyPot = (combinedState) => {
+
+	if (store !== null)
+		return console.error(`Redux-Honey: \n Could not call createHoneyPot() - a redux honeyPot was already created. It's best practice to create one store and add addHoney() state to your store as needed. If your application uses code-splitting techniques, lazy load your components so only one store is loaded & created`);
 
 	if (!isCombinedStateValid(combinedState))
 		return console.error(`Redux-Honey: \n Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
@@ -126,12 +127,22 @@ const createSetState = stateKey => payload => {
 	if (!store)
 		return handleStoreNotSetError(`state.set() for ${stateKey}`);
 
-	const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
-	if (invalidKeysInPayload.length)
-		return handleGivenInvalidKeysError(invalidKeysInPayload, payload, stateKey);
+	try {
+
+		const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
+		if (invalidKeysInPayload.length) {
+ 
+			// Parameters are forwarded to the super class (here Error).
+			throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
+		}
+
+	} catch(error) {
+		console.error(error);
+	}
 
 	store.dispatch({ type: stateKey, payload });
 }
+
 
 const createGetState = stateKey => (string, options) => {
 
@@ -147,16 +158,22 @@ const createGetState = stateKey => (string, options) => {
 			return state;
 
 		const keys = string.split(".");
+		let keychain = "";
 
 		keys.forEach(key => {
+
 			state = getStatePieceWithKey(state, key, options);
+			keychain += (keychain.length) ? `.${key}` : key;
+
+			if (typeof state === "undefined")
+				throw new Error(`Redux-Honey: \n Could not getState() for state "${stateKey}". Please ensure the string passed is a dot-separated string & the requested state ("${keychain}") does not exist on "${stateKey}"`);
 		});
 
 		return (options.returnOriginal)
 			? state
 			: deepClone(state);
 	} catch(error) {
-		console.error(`Redux-Honey: \n Could not getState() for the given string "${string}". \n ${error}. Please ensure the string passed is a dot-separated string`);
+		console.error(error);
 	}
 }
 
@@ -205,11 +222,12 @@ const shouldUpdateState = (type, stateKey) => (
 );
 
 const isCombinedStateValid = combinedState => (
-	combinedState && typeof combinedState === "object"
+	combinedState && typeof combinedState === "object" && Object.keys(combinedState).length
 )
 
 const handleStoreNotSetError = uncalledMethodName => {
 	console.error(`Redux-Honey: \n Unable to call ${uncalledMethodName} - the store was not set`);
+	return null
 }
 
 const getPropertyKeyAndValue = key => {
@@ -358,8 +376,4 @@ const confirmGetStateOptionsAreValid = (options, stateKey) => {
 
 const throwInvalidGetStateOptionsError = (stateKey, message) => {
 	throw new Error(`Invalid options for ${stateKey} state.get() - ${message}`);
-}
-
-const handleGivenInvalidKeysError = (invalidKeysInPayload, payload, stateKey) => {
-	console.warn(`Redux-Honey: \n Could not call state.set() for ${stateKey}. Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 }
