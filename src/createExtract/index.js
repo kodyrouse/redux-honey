@@ -1,11 +1,12 @@
 import React from "react";
 import createReactClass from "create-react-class";
 import isEqual from "react-fast-compare";
+import log from "../utils/log";
 
 export default store => (mapHoneyToProps, WrappedComponent) => {
 
   if (typeof mapHoneyToProps !== "function") {
-    console.warn(`Redux-Honey: \n the given mapHoneyToProps for component <${WrappedComponent.name}> was not a function. Please ensure the first parameter used in the extract method is a function`);
+    log.warn(`the given mapHoneyToProps for component <${WrappedComponent.name}> was not a function. Please ensure the first parameter used in the extract method is a function`);
     return WrappedComponent;
   }
 
@@ -24,23 +25,30 @@ export default store => (mapHoneyToProps, WrappedComponent) => {
 
       Object.keys(honeyRequested).forEach(key => {
         if (typeof honeyRequested[key] === "undefined") {
-          console.warn(`Redux-Honey: \n You attempted to extract a value for the key "${key}" for the component <${WrappedComponent.name}> but it returned undefined`);
+          log.warn(`You attempted to extract a value for the key "${key}" for the component <${WrappedComponent.name}> but it returned undefined`);
         }
       });
     },
 
     handleStoreChange: function() {
-      if (this.shouldUpdate())
+      if (this.shouldUpdate()) {
         this.forceUpdate();
+      }
     },
 
     shouldUpdate: function() {
 
-      const updatedSubscribedState = mapHoneyToProps(store.getState());
+      try {
 
-      if (!isEqual(this.subscribedState, updatedSubscribedState)) {
-        this.subscribedState = updatedSubscribedState;
-        return true;
+        const updatedSubscribedState = mapHoneyToProps(store.getState());
+
+        if (!isEqual(this.subscribedState, updatedSubscribedState)) {
+          this.subscribedState = updatedSubscribedState;
+          return true;
+        }
+      } catch(error) {
+        log.error(`extract() failed for the component <${WrappedComponent.name}>. This happened because your mapHoneyToProps was trying to access properties on an object that was set to null. To avoid this, it's best to set it to an empty object`);
+        console.error(error);
       }
 
       return false;

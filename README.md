@@ -48,7 +48,7 @@ createHoneyPot({
 // No need to wrap your main <App /> component in anything like <Provider></Provider>
 // Ensure that your store is imported before your main rendered component (<App /> in this case)
 ReactDOM.render(
-  <App />
+  <App />,
  document.getElementById('root')
 );
 ```
@@ -70,7 +70,7 @@ Example:
 
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
+// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: "redux-honey"
@@ -93,6 +93,9 @@ state.get();
 // Updates state
 state.set();
 
+// Resets key back to its starting value set on initialState that was passed in addHoney
+state.resetKey();
+
 // Reset back to the initialState that was passed in addHoney
 state.reset();
 ```
@@ -112,7 +115,7 @@ Example:
 ```js
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains three mains: state.get(), state.set(), and state.reset()
+// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: ""
@@ -257,7 +260,46 @@ const tomSmithIndex = state.get("friends.[id=21]", { getItemIndex: true });
 // Returns an uncloned version of the friend with id = 21
 const tomSmith = state.get("friends.[id=21]", { returnOriginal: true });
 ```
- 
+
+## state.resetKey(key)
+
+### Arguments
+- **key** *(required)* - string - a key from your state you would like to reset back to its initial value
+
+### Returns
+*null*
+
+Call ```state.resetKey()``` to set a key's value back to its initialState that was passed when calling ```addHoney()```
+
+Example:
+
+```js
+import { addHoney, wait } from "redux-honey";
+
+
+const state = addHoney("funWithReduxHoney", {
+ isLoading: false,
+ isSaving: false,
+ details: {}
+});
+
+// exported to be added passed into the createHoneyPot method
+export default state;
+
+
+export const showFunStuffAction = async () => {
+  
+ const details = { isFun: true };
+ state.set({ details });
+
+ // wait() is a method that returns a promise
+ // Waits 500ms before continuing. Described in greater detail below
+ await wait(500);
+
+ // Resets "details" back to its initial state, which is {}
+ state.resetKey("details");
+}
+``` 
 
 ## state.reset(options)
 
@@ -277,8 +319,8 @@ import { addHoney, wait } from "redux-honey";
 
 // addHoney() returns an object with its reducer and its state object
 const state = addHoney("funWithReduxHoney", {
-  isLoading: false,
-  isSaving: false
+ isLoading: false,
+ isSaving: false
 });
 
 // exported to be added passed into the createHoneyPot method
@@ -307,10 +349,10 @@ Super simple!
 
 ```js
 const state = addHoney("funWithReduxHoney", {
-  isLoading: false,
-  isSaving: false,
-  favLibrary: "redux-honey",
-  name: "Bob Barker"
+ isLoading: false,
+ isSaving: false,
+ favLibrary: "redux-honey",
+ name: "Bob Barker"
 });
 
 
