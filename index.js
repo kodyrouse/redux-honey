@@ -1,18 +1,24 @@
 import { createStore, combineReducers } from "redux";
 import deepClone from "./src/utils/deepClone";
 import log from "./src/utils/log";
-import wait from "./src/utils/wait";
+import nap from "./src/utils/nap";
+import canBeOneOf from "./src/canBeOneOf";
+import arrayOf from "./src/arrayOf";
 import createExtract from "./src/createExtract";
+import createTypeMapsForStates from "./src/createTypeMapsForStates";
+import arrayTypes from "./src/arrayTypes";
+import typeCheckPayload from "./src/typeCheckPayload";
 
 
 
 
 let store = null;
 let initialStates = {};
+let statesTypeMap = {};
 let stateKeys = {};
 const RESET_STORE = "__rootStore/__RESET_STORE";
 
-const createHoneyPotOptions = {
+let createHoneyPotOptions = {
 	typeSafe: false
 }
 
@@ -33,7 +39,7 @@ let hasSeenExtractionWarning = false;
 let extract = (mapHoneyToProps, WrappedComponent) => {
 
 	if (!hasSeenExtractionWarning)
-    log.error(`Unable to use the extract() method - the store has not been created. This likley happened because createHoneyPot() failed or components that use extract() were imported before the store was created. Please ensure the store returned from calling "createHoneyPot" is imported before your root component`);
+    log.error(`Unable to use the extract() method - the store has not yet been created. This likley happened because createHoneyPot() failed or components that use extract() were imported before the store was created. Please ensure the store returned from calling "createHoneyPot" is imported before your root component`);
 
   hasSeenExtractionWarning = true;
 	return WrappedComponent;
@@ -49,16 +55,27 @@ const createHoneyPot = (combinedState, options) => {
 	if (!isCombinedStateValid(combinedState))
 		return log.error(`Could not call createHoneyPot() - the passed combinedState was not built with redux-honey.`);
 
-
+	createHoneyPotOptions = Object.assign({}, createHoneyPotOptions, options);
 
 	store = createStore(getRootReducer(combinedState));
-	extract = createExtract(store);
+	extract = createExtract(store, createHoneyPotOptions.typeSafe);
+
+	if (createHoneyPotOptions.typeSafe) {
+		statesTypeMap = createTypeMapsForStates(initialStates);
+		window.statesTypeMap = statesTypeMap;
+		resetStoreToInitialState();
+	} else if (window.isAddHoneyUsingTypeSafeMethods === true) {
+		log.error(`You are using built-in typeSafe methods like arrayOf() and canBeOneOf() but typeSafe was not set to true when calling createHoneyPot(). Without typeSafe set to true, arrayOf() and canBeOneOf() will not work as expected.`)
+	}
 }
 
 const addHoney = (stateKey, initialState) => {
 
 	if (!isUniqueAndValidStateKey(stateKey))
-		return log.error(`Unable to call addHoney() - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
+		return log.error(`Unable to call addHoney("${stateKey}") - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
+
+	if (Array.isArray(initialState) || typeof initialState !== "object")
+		return log.error(`Unable to call addHoney("${stateKey}") - the given initialState was not an object`);
 
 	addStateKeyToStateKeys(stateKey);
 	addInitialStateToInitialStates(stateKey, initialState);
@@ -85,7 +102,10 @@ export {
 	createHoneyPot,
 	addHoney,
 	extract,
-	wait,
+	nap,
+	canBeOneOf,
+	arrayOf,
+	arrayTypes,
 	resetStoreToInitialState
 };
 
@@ -114,17 +134,17 @@ const getRootReducer = (combinedState) => {
 }
 
 const createReducer = (stateKey, initialState) => (
-	(state = initialState, { type, payload }) => ((shouldUpdateState(type, stateKey))
+	(state = initialState, { type, payload }) => ((type === stateKey)
 		? updateState(state, payload)
 		: (type === RESET_STORE)
-		? deepClone(initialState)
+		? deepClone(initialStates[stateKey])
 		: state
 	)
 )
 
 const updateState = (state, payload) => (
 	Object.assign({}, state, payload)
-);
+)
 
 const createSetState = stateKey => payload => {
 
@@ -136,6 +156,12 @@ const createSetState = stateKey => payload => {
 		const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
 		if (invalidKeysInPayload.length) 
 			throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
+
+		if (createHoneyPotOptions.typeSafe) {
+			const payloadTypeCheckErrors = typeCheckPayload(payload, statesTypeMap[stateKey]);
+			if (payloadTypeCheckErrors.length)
+				throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload had the following typeSafe errors: \n ${payloadTypeCheckErrors}`);
+		}
 
 		store.dispatch({ type: stateKey, payload });
 
@@ -233,10 +259,6 @@ const canGetNestedStatePiecesWithString = string => (
 	string && typeof string === "string" && string.length > 0
 )
 
-const shouldUpdateState = (type, stateKey) => (
-	type === stateKey
-);
-
 const isCombinedStateValid = combinedState => (
 	combinedState && typeof combinedState === "object" && Object.keys(combinedState).length
 )
@@ -259,7 +281,6 @@ const getPropertyKeyAndValue = key => {
 			: splitKeyAndValue[1]
 	}
 }
-
 
 const getKeyForInitialState = stateKey => `${stateKey}${RESET_STORE}`;
 

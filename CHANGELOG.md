@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **6.0.0**
+- Added `typeSafe`, a major feature to help improve state visibility & wrap testing around state updates & subscriptions!
+- Bug fixes with extract & props being updated 
+
 ### **5.1.0**
 - Added a method ```state.resetKey()``` that allows the resetting of a single key vs resetting the entire state with ```state.reset()```
 - Improved error messages for potential points of failure
