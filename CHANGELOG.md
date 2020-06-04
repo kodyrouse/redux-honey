@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.0.1**
+- Fixed README.md to show the name change from `wait` to `nap`
+
 ### **6.0.0**
 - Added `typeSafe`, a major feature to help improve state visibility & wrap testing around state updates & subscriptions!
 - Bug fixes with extract & props being updated 

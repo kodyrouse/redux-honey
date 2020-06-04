@@ -274,7 +274,7 @@ Call ```state.resetKey()``` to set a key's value back to its initialState that w
 Example:
 
 ```js
-import { addHoney, wait } from "redux-honey";
+import { addHoney, nap } from "redux-honey";
 
 
 const state = addHoney("funWithReduxHoney", {
@@ -292,9 +292,9 @@ export const showFunStuffAction = async () => {
  const details = { isFun: true };
  state.set({ details });
 
- // wait() is a method that returns a promise
+ // nap() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
- await wait(500);
+ await nap(500);
 
  // Resets "details" back to its initial state, which is {}
  state.resetKey("details");
@@ -314,7 +314,7 @@ Call ```state.reset()``` to set the state piece back to the passed initialState 
 Example:
 
 ```js
-import { addHoney, wait } from "redux-honey";
+import { addHoney, nap } from "redux-honey";
 
 
 // addHoney() returns an object with its reducer and its state object
@@ -332,9 +332,9 @@ export const showFunStuffAction = async () => {
  // Let components know you're loading data - You know, if you're into that stuff.
  state.set({ isLoading: true });
 
- // wait() is a method that returns a promise
+ // nap() is a method that returns a promise
  // Waits 500ms before continuing. Described in greater detail below
- await wait(500);
+ await nap(500);
 
  // Resets this piece of state back to what it was when addHoney() was called
  state.reset();
@@ -435,7 +435,7 @@ const mapHoneyToProps = store => ({
 export default extract(mapHoneyToProps, UserProfile);
 ```
  
-## wait(duration)
+## nap(duration)
 
 ### Arguments
 - **duration** *(required)* - number - the number of ms you want to wait until continuing
@@ -443,7 +443,7 @@ export default extract(mapHoneyToProps, UserProfile);
 ### Returns
 *null*
 
-Call ```wait()``` when you need to block code execution for a defined duration. An example of it's use is above ☝️
+Call ```nap()``` when you need to block code execution for a defined duration. This is especially useful for animation purposes. An example of it's use is above ☝️
  
  
 ## resetStoreToInitialState()
@@ -459,7 +459,7 @@ Call ```resetStoreToInitialState()``` when you need to reset all states in your 
 Example:
 
 ```js
-import { addHoney, resetStoreToInitialState } from "redux-honey";
+import { addHoney, nap, resetStoreToInitialState } from "redux-honey";
 
 
 // addHoney() returns an object with its reducer and its state object
@@ -474,7 +474,7 @@ export const showFunStuffAction = async () => {
  state.set({ isSigningOut: true });
 
  // For fun because why not :)
- await wait(1000);
+ await nap(1000);
 
  // Resets entire store back to all passed initialStates
  resetStoreToInitialState();
