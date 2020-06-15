@@ -11,7 +11,7 @@ export default (store, typeSafe) => (mapHoneyToProps, WrappedComponent) => {
   }
 
   if (typeSafe)
-    validateHoneyRequested(mapHoneyToProps, WrappedComponent.name)
+    validateHoneyRequested(mapHoneyToProps, window.statesTypeMap, WrappedComponent.name)
 
   return createReactClass({
 
@@ -22,7 +22,7 @@ export default (store, typeSafe) => (mapHoneyToProps, WrappedComponent) => {
     getInitialState: function() {
       this.subscribedState = mapHoneyToProps(store.getState());
       this.unsubscribe = store.subscribe(this.handleStoreChange);
-      if (!typeSafe) validateHoneyRequested(mapHoneyToProps, WrappedComponent.name)
+      if (!typeSafe) validateHoneyRequested(mapHoneyToProps, store.getState(), WrappedComponent.name)
       return null;
     },
 
@@ -37,10 +37,11 @@ export default (store, typeSafe) => (mapHoneyToProps, WrappedComponent) => {
 
     shouldUpdate: function() {
 
+      if (!this.__isMounted) return false;
+
       try {
 
         const updatedSubscribedState = mapHoneyToProps(store.getState());
-
         if (!isEqual(this.subscribedState, updatedSubscribedState)) {
           this.subscribedState = updatedSubscribedState;
           return true;
@@ -75,10 +76,12 @@ export default (store, typeSafe) => (mapHoneyToProps, WrappedComponent) => {
 }
 
 
-const validateHoneyRequested = (mapHoneyToProps, componentName) => {
+const validateHoneyRequested = (mapHoneyToProps, state, componentName) => {
+
 
   try {
-    const honeyRequested = mapHoneyToProps(window.statesTypeMap);
+
+    const honeyRequested = mapHoneyToProps(state);
     const honeyKeys = Object.keys(honeyRequested);
     const failedExtractedKeys = [];
 

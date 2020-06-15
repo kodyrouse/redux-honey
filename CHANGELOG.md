@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.0.2**
+- Fixed issue with `extract` false failing when components were first mounted
+
 ### **6.0.1**
 - Fixed README.md to show the name change from `wait` to `nap`
 
