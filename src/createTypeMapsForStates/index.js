@@ -1,6 +1,7 @@
 import arrayOf from "../arrayOf";
 import canBeOneOf from "../canBeOneOf";
 import log from "../utils/log";
+import { typeCheckArray } from "../typeCheckPayload";
 import isEqual from "react-fast-compare";
 
 export default combinedState => {
@@ -32,9 +33,21 @@ const typeMapState = (stateKey, state) => {
     
     stateTypeMap[key] = valueType;
 
-    if (Array.isArray(valueType))
-      state[key] = [];
-    else if (typeof valueType === "string" && valueType.startsWith("[")) {
+    if (Array.isArray(valueType)) {
+
+      if (valueType.length !== 2) return state[key] = [];
+      
+      // valueType.length will be 2 when a default array value is passed into arrayOf()
+      // -> when it's called. It's type checked here just to ensure it passes
+      const typeCheckErrors = typeCheckArray(valueType[1], valueType[0], key);
+      if (!typeCheckErrors.length)
+        state[key] = valueType[1];
+      else {
+        state[key] = [];
+        log.error(typeCheckErrors);
+      }
+
+    } else if (typeof valueType === "string" && valueType.startsWith("[")) {
       state[key] = JSON.parse(valueType)[0];
     }
   });

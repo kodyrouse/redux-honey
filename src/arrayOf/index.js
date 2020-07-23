@@ -11,8 +11,8 @@ export default (...options) =>  {
     if (options.length === 0) {
       log.error(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but didn't pass any arguments. Please ensure you pass one argument when calling arrayOf() of arrayTypes.String, arrayTypes.Number, arrayTypes.Boolean, or a non-empty object`);
       return "string";
-    } else if (options.length > 1)
-      log.warn(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but passed in more than one argument. Currently arrayOf() only supports one argument and all other arguments will be ignored`);
+    } else if (options.length > 2)
+      log.warn(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but passed in more than two arguments but arrayOf() only supports two arguments: The first argument is used to define the value type / object shape items in the array will be structured like. The second is the default value the array will initially be set to`);
 
     const returnArrayType = [];
 
@@ -21,6 +21,11 @@ export default (...options) =>  {
     } catch(error) {
       log.error(error);
     }
+
+    // This adds the given default value as part of the state map to return
+    // This given set array is validated in createTypeMapsForStates
+    if (options.length >= 2)
+      returnArrayType.push(options[1]);
 
     return returnArrayType;
   }

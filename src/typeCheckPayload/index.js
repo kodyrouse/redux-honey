@@ -69,7 +69,7 @@ const typeCheckCanBeOneOf = (payloadKey, payloadValue, initialStateType) => {
 }
 
 
-const typeCheckArray = (payloadValue, arrayItemStructure, payloadKey) => {
+export const typeCheckArray = (payloadValue, arrayItemStructure, payloadKey) => {
 
   const arrayItemType = (typeof arrayItemStructure === "object")
     ? "object"

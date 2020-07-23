@@ -61,6 +61,10 @@ const createHoneyPot = (combinedState, options) => {
 	extract = createExtract(store, createHoneyPotOptions.typeSafe);
 
 	if (createHoneyPotOptions.typeSafe) {
+
+		// createTypeMapsForStates has a side effect of adjusting the initial values on the initialStates
+		// -> if one of the values is arrayOf || canBeOneOf. resetStoreToInitialState is called
+		// after this to reset the entire store to its updated default values
 		statesTypeMap = createTypeMapsForStates(initialStates);
 		window.statesTypeMap = statesTypeMap;
 		resetStoreToInitialState();
