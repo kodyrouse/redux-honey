@@ -13,13 +13,16 @@ export default (...options) => {
 
     const returnObj = {
       __honeyType: "canBeOneOf",
-      __itemType: typeof options[0],
       __initialValue: options[0],
+      __valueType: null, // set in "typeMapAndUpdateInitialStates"
       __options: {}
     }
 
     try {
-      options.forEach(option => {
+
+      for (let i = 0; i < options.length; i++) {
+
+        const option = options[i];
 
         // TODO - I need to eventually check to ensure that no options are strings from arrayTypes.
         const optionType = typeof option;
@@ -35,7 +38,7 @@ export default (...options) => {
 
         if (Object.keys(passedOptionTypes).length > 1)
           throw new Error(`Redux-Honey: \n The key "${key}" for addHoney("${stateKey}") is using canBeOneOf() but is passing arguments of more than one type. Currently canBeOneOf() only supports one type at a time - please ensure all of your arguments are either of type "string" or "number"`);
-      });
+      };
     } catch(error) {
       log.error(error);
     }

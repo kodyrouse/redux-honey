@@ -13,7 +13,8 @@ export default initialValue => {
 
     return {
       __honeyType: "anyValue",
-      __initialValue: initialValue
+      __initialValue: initialValue,
+      __valueType: null // set in "typeMapAndUpdateInitialStates"
     }
   }
 }

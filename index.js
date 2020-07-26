@@ -6,7 +6,7 @@ import canBeOneOf from "./src/canBeOneOf";
 import arrayOf from "./src/arrayOf";
 import anyValue from "./src/anyValue";
 import createExtract from "./src/createExtract";
-import typeMapAndUpdateInitialStates from "./src/typeMapAndUpdateInitialStates";
+import createTypeMapsAndUpdateInitialStates from "./src/createTypeMapsAndUpdateInitialStates";
 import arrayTypes from "./src/arrayTypes";
 import typeCheckPayload from "./src/typeCheckPayload";
 
@@ -63,7 +63,7 @@ const createHoneyPot = (combinedState, options) => {
 
 	if (createHoneyPotOptions.typeSafe) {
 
-		statesTypeMap = typeMapAndUpdateInitialStates(initialStates);
+		statesTypeMap = createTypeMapsAndUpdateInitialStates(initialStates);
 		window.statesTypeMap = statesTypeMap;
 		resetStoreToInitialState();
 	} else if (window.isAddHoneyUsingTypeSafeMethods === true) {
