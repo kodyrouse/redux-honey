@@ -4,8 +4,9 @@ import log from "./src/utils/log";
 import nap from "./src/utils/nap";
 import canBeOneOf from "./src/canBeOneOf";
 import arrayOf from "./src/arrayOf";
+import anyValue from "./src/anyValue";
 import createExtract from "./src/createExtract";
-import createTypeMapsForStates from "./src/createTypeMapsForStates";
+import typeMapAndUpdateInitialStates from "./src/typeMapAndUpdateInitialStates";
 import arrayTypes from "./src/arrayTypes";
 import typeCheckPayload from "./src/typeCheckPayload";
 
@@ -62,10 +63,7 @@ const createHoneyPot = (combinedState, options) => {
 
 	if (createHoneyPotOptions.typeSafe) {
 
-		// createTypeMapsForStates has a side effect of adjusting the initial values on the initialStates
-		// -> if one of the values is arrayOf || canBeOneOf. resetStoreToInitialState is called
-		// after this to reset the entire store to its updated default values
-		statesTypeMap = createTypeMapsForStates(initialStates);
+		statesTypeMap = typeMapAndUpdateInitialStates(initialStates);
 		window.statesTypeMap = statesTypeMap;
 		resetStoreToInitialState();
 	} else if (window.isAddHoneyUsingTypeSafeMethods === true) {
@@ -109,6 +107,7 @@ export {
 	nap,
 	canBeOneOf,
 	arrayOf,
+	anyValue,
 	arrayTypes,
 	resetStoreToInitialState
 };

@@ -1,6 +1,10 @@
 
 # ChangeLog
 
+### **6.1.0**
+- Added ability to set an `initialValue` when using `arrayOf`
+- Added an `anyValue()` that is used to enable value ignoring when `typeSafe` is set to true
+
 ### **6.0.2**
 - Fixed issue with `extract` false failing when components were first mounted
 

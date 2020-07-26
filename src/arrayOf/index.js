@@ -1,5 +1,5 @@
 import log from "../utils/log";
-import { typeMapObject, getValueType, isValueNull, isValueAnArray, isValueAnObject } from "../createTypeMapsForStates";
+import { typeMapObject, getValueType, isValueNull, isValueAnArray, isValueAnObject } from "../typeMapAndUpdateInitialStates";
 import arrayTypes from "../arrayTypes";
 
 export default (...options) =>  {
@@ -14,20 +14,28 @@ export default (...options) =>  {
     } else if (options.length > 2)
       log.warn(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but passed in more than two arguments but arrayOf() only supports two arguments: The first argument is used to define the value type / object shape items in the array will be structured like. The second is the default value the array will initially be set to`);
 
-    const returnArrayType = [];
+    const returnObj = {
+      __honeyType: "arrayOf",
+      __arrayItemType: null,
+      __initialValue: []
+    }
 
     try {
-      returnArrayType.push(getArrayItemType(options[0], key, stateKey));
+      returnObj.__arrayItemType = getArrayItemType(options[0], key, stateKey);
     } catch(error) {
       log.error(error);
     }
 
     // This adds the given default value as part of the state map to return
     // This given set array is validated in createTypeMapsForStates
-    if (options.length >= 2)
-      returnArrayType.push(options[1]);
+    if (options.length >= 2) {
+      if (Array.isArray(options[1]))
+        returnObj.__initialValue = options[1];
+      else
+        log.warn(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() & is passing an initial value, however the value given is not an array.`);
+    }
 
-    return returnArrayType;
+    return returnObj;
   }
 }
 
@@ -68,13 +76,4 @@ const getArrayTypeForString = arrayItem => {
 
   return arrayType;
 }
-
-
-
-
-
-
-
-
-
 
