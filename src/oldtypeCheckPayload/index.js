@@ -1,4 +1,5 @@
 
+
 export default (payload, stateTypeMap) => {
   let typeCheckErrors = typeCheckObject(payload, stateTypeMap)
   return (typeCheckErrors.length) ? typeCheckErrors += ` \n` : typeCheckErrors;

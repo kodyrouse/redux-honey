@@ -20,13 +20,14 @@ export default (...options) => {
 
     try {
 
-      for (let i = 0; i < options.length; i++) {
+      const optionsLn = options.length;
+      for (let i = 0; i < optionsLn; i++) {
 
         const option = options[i];
 
-        // TODO - I need to eventually check to ensure that no options are strings from arrayTypes.
+        // TODO - I need to check to ensure that no options are strings from arrayTypes.
         const optionType = typeof option;
-        if (optionType !== "string" && optionType !== "number")
+        if (!isOptionTypeSupported(optionType))
           throw new Error(`Redux-Honey: \n The key "${key}" for addHoney("${stateKey}") is using canBeOneOf() but is passing options with a typeof "${optionType}". Currently the only supported option types are "string" and "number".`);
 
         passedOptionTypes[optionType] = true;
@@ -36,7 +37,7 @@ export default (...options) => {
 
         returnObj.__options[option] = true;
 
-        if (Object.keys(passedOptionTypes).length > 1)
+        if (optionsHaveMoreThanOneType(passedOptionTypes))
           throw new Error(`Redux-Honey: \n The key "${key}" for addHoney("${stateKey}") is using canBeOneOf() but is passing arguments of more than one type. Currently canBeOneOf() only supports one type at a time - please ensure all of your arguments are either of type "string" or "number"`);
       };
     } catch(error) {
@@ -46,3 +47,11 @@ export default (...options) => {
     return returnObj;
   }
 }
+
+const isOptionTypeSupported = optionType => (
+  optionType === "string" || optionType === "number"
+)
+
+const optionsHaveMoreThanOneType = optionTypes => (
+  Object.keys(optionTypes).length > 1
+)

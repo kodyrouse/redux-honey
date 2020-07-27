@@ -9,10 +9,13 @@ import isEqual from "react-fast-compare";
 export default combinedState => {
 
   const typeMapsForStates = {};
+  const combinedStateKeys = Object.keys(combinedState);
+  const combinedStateKeysLn = combinedStateKeys.length;
 
-  Object.keys(combinedState).forEach(stateKey => {
+  for (let i = 0; i < combinedStateKeysLn; i++) {
+    const stateKey = combinedStateKeys[i];
     typeMapsForStates[stateKey] = typeMapObject(stateKey, combinedState[stateKey]);
-  });
+  }
 
   console.log(typeMapsForStates);
   console.log(combinedState);
@@ -22,10 +25,13 @@ export default combinedState => {
 
 export const typeMapObject = (stateKey, object) => {
 
-  const objectMap = {};
+  const objectTypeMap = {};
+  const objectKeys = Object.keys(object);
+  const objectKeysLn = objectKeys.length;
 
-  Object.keys(object).forEach(key => {
+  for (let i = 0; i < objectKeysLn; i++) {
 
+    const key = objectKeys[i];
     const value = object[key];
     let valueType = null;
 
@@ -38,20 +44,14 @@ export const typeMapObject = (stateKey, object) => {
     if (isCustomTypeObject(valueType)) {
       object[key] = valueType.__initialValue;
 
-      if (valueType.__honeyType === "arrayOf") {
-
-        try {
-          valueType.__itemType = typeMapArrayOfItem(stateKey, key, valueType.__itemType);
-        } catch(error) {
-          log.error(error);
-        }
-      }
+      if (valueType.__honeyType === "arrayOf")
+        typeMapForArrayOf(stateKey, key, valueType)
     }
 
-    objectMap[key] = valueType;
-  });
+    objectTypeMap[key] = valueType;
+  };
 
-  return objectMap;
+  return objectTypeMap;
 }
 
 
@@ -83,6 +83,14 @@ const isCustomValueMethod = value => {
 const isCustomTypeObject = value => (
   typeof value === "object" && typeof value.__honeyType === "string"
 )
+
+const typeMapForArrayOf = (stateKey, key, arrayOfObject) => {
+  try {
+    arrayOfObject.__itemTypeMap = typeMapArrayOfItem(stateKey, key, arrayOfObject.__itemTypeMap);
+  } catch(error) {
+    log.error(error);
+  }
+}
 
 
 const typeMapArrayOfItem = (stateKey, key, arrayItem) => {

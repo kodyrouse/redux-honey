@@ -12,7 +12,7 @@ export default (...options) =>  {
     const returnObj = {
       __honeyType: "arrayOf",
       __initialValue: [],
-      __itemType: options[0] // reset in "typeMapAndUpdateInitialStates"
+      __itemTypeMap: options[0] // set in "typeMapAndUpdateInitialStates"
     }
 
     // This adds the given default value as part of the state map to return
