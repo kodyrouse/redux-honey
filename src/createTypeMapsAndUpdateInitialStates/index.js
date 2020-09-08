@@ -120,12 +120,15 @@ const getArrayTypeForString = arrayItem => {
 
   let arrayType;
 
-  Object.keys(arrayTypes).forEach(type => {
+  const arrayTypesKeys = Object.keys(arrayTypes);
+  const arrayTypesKeysLn = arrayTypesKeys.length;
 
-    const stringValue = arrayTypes[type];
+  for (let i = 0; i < arrayTypesKeysLn; i++) {
+
+    const stringValue = arrayTypes[arrayTypesKeys[i]];
     if (arrayItem === stringValue)
       arrayType = stringValue;
-  })
+  }
 
   return arrayType;
 }

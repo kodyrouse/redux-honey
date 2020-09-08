@@ -62,7 +62,6 @@ const createHoneyPot = (combinedState, options) => {
 	extract = createExtract(store, createHoneyPotOptions.typeSafe);
 
 	if (createHoneyPotOptions.typeSafe) {
-
 		statesTypeMap = createTypeMapsAndUpdateInitialStates(initialStates);
 		window.statesTypeMap = statesTypeMap;
 		resetStoreToInitialState();
@@ -151,8 +150,7 @@ const updateState = (state, payload) => (
 
 const createSetState = stateKey => payload => {
 
-	if (!store)
-		return handleStoreNotSetError(`state.set() for ${stateKey}`);
+	if (!store) return handleStoreNotSetError(`state.set() for ${stateKey}`);
 
 	try {
 
@@ -297,7 +295,7 @@ const getObjectValuesForKeys = (stateKey, keepKeyValues) => {
 		if (typeof state[key] !== "undefined")
 			stateToKeep[key] = state[key]
 		else
-			console.warn(`Redux-Honey: \n Given keepKeyValues key -> ${key} for state.reset() does not exist for ${stateKey}. The key -> ${key} is likely misspelled or it needs to be added to the passed initialState when calling addHoney().`);
+			log.warn(`Given keepKeyValues key -> ${key} for state.reset() does not exist for ${stateKey}. The key -> ${key} is likely misspelled or it needs to be added to the passed initialState when calling addHoney().`);
 	});
 
 	return stateToKeep;

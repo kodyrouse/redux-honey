@@ -1,4 +1,5 @@
 import log from "../utils/log";
+import buildHoneyType from "../buildHoneyType";
 
 export default initialValue => {
 
@@ -11,10 +12,6 @@ export default initialValue => {
       initialValue = null;
     }
 
-    return {
-      __honeyType: "anyValue",
-      __initialValue: initialValue,
-      __valueType: null // set in "typeMapAndUpdateInitialStates"
-    }
+    return buildHoneyType("anyValue", initialValue);
   }
 }

@@ -1,4 +1,5 @@
 import log from "../utils/log";
+import buildHoneyType from "../buildHoneyType";
 
 export default (...options) =>  {
 
@@ -9,11 +10,9 @@ export default (...options) =>  {
     if (options.length === 0)
       log.error(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but didn't pass any arguments. Please ensure you pass one argument when calling arrayOf() of arrayTypes.String, arrayTypes.Number, arrayTypes.Boolean, or a non-empty object`);
 
-    const returnObj = {
-      __honeyType: "arrayOf",
-      __initialValue: [],
-      __itemTypeMap: options[0] // set in "typeMapAndUpdateInitialStates"
-    }
+    const returnObj = buildHoneyType("arrayOf", [], {
+      __itemTypeMap: options[0]
+    });
 
     // This adds the given default value as part of the state map to return
     // This given set array is validated in createTypeMapsForStates

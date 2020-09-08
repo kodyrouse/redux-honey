@@ -78,14 +78,14 @@ export default (store, typeSafe) => (mapHoneyToProps, WrappedComponent) => {
 
 const validateHoneyRequested = (mapHoneyToProps, state, componentName) => {
 
-
   try {
 
     const honeyRequested = mapHoneyToProps(state);
     const honeyKeys = Object.keys(honeyRequested);
+    const honeyKeysLn = honeyKeys.length;
     const failedExtractedKeys = [];
 
-    for (let i = 0; i < honeyKeys.length; i++) {
+    for (let i = 0; i < honeyKeysLn; i++) {
 
       const key = honeyKeys[i];
       if (typeof honeyRequested[key] === "undefined")

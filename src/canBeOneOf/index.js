@@ -1,4 +1,5 @@
 import log from "../utils/log";
+import buildHoneyType from "../buildHoneyType";
 
 export default (...options) => {
 
@@ -11,12 +12,9 @@ export default (...options) => {
 
     const passedOptionTypes = {};
 
-    const returnObj = {
-      __honeyType: "canBeOneOf",
-      __initialValue: options[0],
-      __valueType: null, // set in "typeMapAndUpdateInitialStates"
+    const returnObj = buildHoneyType("canBeOneOf", options[0], {
       __options: {}
-    }
+    });
 
     try {
 

@@ -14,8 +14,9 @@ const typeCheckObject = (payloadObject, objectMap, keyChain = "") => {
 
   const objectMapKeys = Object.keys(objectMap).sort();
   const payloadKeys = Object.keys(payloadObject).sort();
+  const payloadKeysLn = payloadKeys.length;
 
-  for (let i = 0; i < payloadKeys.length; i++) {
+  for (let i = 0; i < payloadKeysLn; i++) {
 
     const key = payloadKeys[i];
     const payloadValue = payloadObject[key];
@@ -29,6 +30,13 @@ const typeCheckObject = (payloadObject, objectMap, keyChain = "") => {
         }
       }
     }
+
+    /**
+      - anyValue, arrayOf, canBeOneOf are now all objects
+
+      - New rules:
+      - Payload value can be null, but only if initialStateType was { __honeyType: }
+    **/
 
     if ((payloadValue === null || payloadValue === undefined))
       typeCheckObjectErrors += createTypeError(`The payload key "${key}" was given a value of null/undefined but values cannot be set to null/undefined with typeSafe on`)
@@ -61,6 +69,8 @@ const getValueType = stateType => (Array.isArray(stateType)
 )
 
 const typeCheckCanBeOneOf = (payloadKey, payloadValue, initialStateType) => {
+
+  // TODO - this is actually now an object
 
   const oneOfOptions = JSON.parse(initialStateType);
   for (let i = 0; i < oneOfOptions.length; i++) {
