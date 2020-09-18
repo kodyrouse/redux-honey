@@ -7,11 +7,9 @@ export default initialValue => {
 
   return (key, stateKey) => {
 
-    if (typeof initialValue === "undefined") {
-      log.warn(`The key "${initialValue}" for addHoney("${stateKey}") wasn't given an initialValue. This will default to null.`);
+    if (typeof initialValue === "undefined")
       initialValue = null;
-    }
-
+    
     return buildHoneyType("anyValue", initialValue);
   }
 }

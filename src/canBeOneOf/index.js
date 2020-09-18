@@ -8,7 +8,7 @@ export default (...options) => {
   return (key, stateKey) => {
 
     if (options.length <= 1)
-      log.warn(`The key "${key}" for addHoney("${stateKey}") is using canBeOneOf() but at least two arguments. Please ensure you pass at least two options of the same type`);
+      log.warn(`The key "${key}" for addHoney("${stateKey}") is using canBeOneOf() but is only given one argument. Please ensure you pass at least two options of the same type`);
 
     const passedOptionTypes = {};
 

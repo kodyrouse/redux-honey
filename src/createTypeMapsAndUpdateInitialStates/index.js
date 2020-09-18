@@ -110,7 +110,7 @@ const typeMapArrayOfItem = (stateKey, key, arrayItem) => {
     const arrayType = getArrayTypeForString(arrayItem);
     if (!arrayType)
       throw new Error(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but was not given a non-supported type. Ensure you are using one of the non-object types for arrayOf() - arrayTypes.String, arrayTypes.Number, or arrayTypes.Boolean`)
-    return arrayType.split(".")[2]
+    return arrayType;
   } else
     throw new Error(`The key "${key}" for addHoney("${stateKey}") is using arrayOf() but was not given one. When using arrayOf(), please ensure you are passing the arrayItem as one of the arrayTypes or as a non-empty object`)
 }
@@ -130,5 +130,5 @@ const getArrayTypeForString = arrayItem => {
       arrayType = stringValue;
   }
 
-  return arrayType;
+  return (!arrayType) ? arrayType : arrayType.split(".")[2];
 }
