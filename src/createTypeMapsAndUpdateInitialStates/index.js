@@ -17,9 +17,6 @@ export default combinedState => {
     typeMapsForStates[stateKey] = typeMapObject(stateKey, combinedState[stateKey]);
   }
 
-  console.log(typeMapsForStates);
-  console.log(combinedState);
-
   return typeMapsForStates;
 }
 
