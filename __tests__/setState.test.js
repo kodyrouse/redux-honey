@@ -17,7 +17,6 @@ test("setting state for addHoney", () => {
 
   createHoneyPot({ state });
 
-  console.log(state.get());
   expect(state.get("name")).toBe("Kody");
   state.set({ name: "Sarah" });
   expect(state.get("name")).toBe("Sarah");
