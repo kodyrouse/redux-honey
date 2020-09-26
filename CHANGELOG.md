@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.1**
+- Added typescript type declarations
+
 ### **6.1.0**
 - Added ability to set an `initialValue` when using `arrayOf`
 - Added an `anyValue()` that is used to enable value ignoring when `typeSafe` is set to true
