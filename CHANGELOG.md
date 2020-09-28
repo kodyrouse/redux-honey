@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.2**
+- Added `options` for type checking `createHoneyPot`
+
 ### **6.1.1**
 - Added typescript type declarations
 
