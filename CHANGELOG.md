@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.4**
+- Updated README.md
+
 ### **6.1.3**
 - Now it returns the built redux store to play nicely with react-redux
 

@@ -27,13 +27,14 @@ Call ```createHoneyPot``` to initialize your store. Pass in an object of all of 
 - **combinedState** *(required)* - object - An object that contains all states returned from calling ```addHoney()```
 
 ### Returns
-- Redux store
+- **Redux store**
 
 ```js
 import { createHoneyPot, addHoney } from "redux-honey";
 
 
-// "addHoney" creates a new piece of state that can be added to "createHoneyPot"
+// "addHoney" creates a new piece of state
+//that can be added to "createHoneyPot"
 const funWithReduxHoney = addHoney("funWithReduxHoney", {
  isFun: true,
  favFood: "pizza"
@@ -45,13 +46,15 @@ const store = createHoneyPot({
 });
 
 
-// No need to add your store in <Provider /> by default (only if you plan on using the built-in extract() method)
+// No need to add your store in <Provider /> by default
+// (only if you plan on using the built-in extract() method)
 ReactDOM.render(
   <App />,
  document.getElementById('root')
 )
 
-// If it's a pain to migrate away from react-redux, you can still pass in your store like usual
+// If it's a pain to migrate away from react-redux,
+// you can still pass in your store like usual
 ReactDOM.render(
   <Provider store={store}>
    <App />
@@ -79,7 +82,9 @@ Example:
 
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
+// addHoney() returns a self-contained state object
+// that contains four methods:
+// state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: "redux-honey"
@@ -102,7 +107,8 @@ state.get();
 // Updates state
 state.set();
 
-// Resets key back to its starting value set on initialState that was passed in addHoney
+// Resets key back to its starting value set on initialState
+// that was passed in addHoney
 state.resetKey();
 
 // Reset back to the initialState that was passed in addHoney
@@ -124,7 +130,9 @@ Example:
 ```js
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
+// addHoney() returns a self-contained state object
+// that contains four methods:
+// state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: ""
@@ -143,7 +151,8 @@ As a safety check when calling ```state.set()```, your passed payload can't cont
 
  
 ```js
-// This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
+// This entire call would fail because
+// isGoingToFailToUpdate was not defined on the initialState
 state.set({ favLibrary: "redux-honey", isGoingToFailToUpdate: true });
 ```
  
@@ -178,7 +187,8 @@ This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
  }
 }
 
-// If I wanted to get the sportingAbilities array, you pass an in-order list of keys like so:
+// If I wanted to get the sportingAbilities array,
+// you pass an in-order list of keys like so:
 state.get("bodyDetails.athletics.sportingAbilities");
 ```
 
@@ -230,7 +240,8 @@ const state = addHoney("funWithReduxHoney", {
 // "friend" will be { id: 45, name: "Johnny Boy" }
 const friend = state.get("friends.[id=45]");
 
-// This returns null because no object in the friends array has a name "Frank Sinatra"
+// This returns null because no object in the friends
+// array has a name "Frank Sinatra"
 const emptyFriend = state.get("friends.[name=Frank Sinatra]");
 ```
 
