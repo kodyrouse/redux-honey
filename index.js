@@ -68,6 +68,8 @@ const createHoneyPot = (combinedState, options) => {
 	} else if (window.isAddHoneyUsingTypeSafeMethods === true) {
 		log.error(`You are using built-in typeSafe methods like arrayOf() and canBeOneOf() but typeSafe was not set to true when calling createHoneyPot(). Without typeSafe set to true, arrayOf() and canBeOneOf() will not work as expected.`)
 	}
+	
+	return store;
 }
 
 const addHoney = (stateKey, initialState) => {

@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.3**
+- Now it returns the built redux store to play nicely with react-redux
+
 ### **6.1.2**
 - Added `options` for type checking `createHoneyPot`
 

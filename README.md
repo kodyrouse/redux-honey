@@ -6,7 +6,7 @@ In a lot of ways, redux is *fantastic* at what it does. The problems begin to ar
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
-- No need for ```react-redux```, ```redux-thunk```, or ```redux-saga```
+- No need for ```react-redux``` or ```redux-thunk```/```redux-saga``` **(though redux-honey still works with react-redux)**
 - Safety checks & warnings to prevent accidental state updates && state-binding for state that doesn't exist
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
@@ -27,7 +27,7 @@ Call ```createHoneyPot``` to initialize your store. Pass in an object of all of 
 - **combinedState** *(required)* - object - An object that contains all states returned from calling ```addHoney()```
 
 ### Returns
-- null
+- Redux store
 
 ```js
 import { createHoneyPot, addHoney } from "redux-honey";
@@ -40,18 +40,27 @@ const funWithReduxHoney = addHoney("funWithReduxHoney", {
 });
 
 // Calling "createHoneyPot" creates your redux honey store
-createHoneyPot({
+const store = createHoneyPot({
  funWithReduxHoney
 });
 
 
-// No need to wrap your main <App /> component in anything like <Provider></Provider>
-// Ensure that your store is imported before your main rendered component (<App /> in this case)
+// No need to add your store in <Provider /> by default (only if you plan on using the built-in extract() method)
 ReactDOM.render(
   <App />,
  document.getElementById('root')
-);
+)
+
+// If it's a pain to migrate away from react-redux, you can still pass in your store like usual
+ReactDOM.render(
+  <Provider store={store}>
+   <App />
+  </Provider>,
+ document.getElementById('root')
+)
 ```
+
+By default, ```redux-honey``` comes built-in with a connect-like method called ```extract``` to bind state to react components. This makes it not necessary to use a wrapper component like ```<Provider />```. However, if you still want to use ```react-redux``` & ```connect``` in your project (or if you don't feel like migrating), you can still pass in your store into ```<Provider />``` with issue.
 
 
 ## addHoney(stateKey, initialState)

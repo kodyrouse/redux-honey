@@ -1,3 +1,5 @@
+import { Store } from "redux"
+
 declare module "redux-honey"
 
 type HoneyState = {
@@ -13,7 +15,7 @@ type HoneyPotOptions = {
 
 export function addHoney(key: string, initialState: object): HoneyState
 export function nap(duration: number): Promise<any>
-export function createHoneyPot(statesObject: object, options?: HoneyPotOptions): void
+export function createHoneyPot(statesObject: object, options?: HoneyPotOptions): Store
 export function extract(extractMethod: Function, component: Function): Function
 export function resetStoreToInitialState(): void
 export function canBeOneOf(optionOne: any, optionTwo: any): Function
