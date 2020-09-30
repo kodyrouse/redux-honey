@@ -1,6 +1,11 @@
 
 # ChangeLog
 
+### **6.1.5**
+- Fixed argument type error for empty `state.get()` call
+- Fixed argument type error for `canBeOneOf()`
+- Fixed argument type error for `anyValue()`
+
 ### **6.1.4**
 - Updated README.md
 

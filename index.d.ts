@@ -3,7 +3,7 @@ import { Store } from "redux"
 declare module "redux-honey"
 
 type HoneyState = {
-  get: (keyChain: string, options: object) => any
+  get: (keyChain?: string, options?: object) => any
   set: (objectValues: object) => void
   reset: () => void
   resetKey: (key: string) => void
@@ -18,6 +18,6 @@ export function nap(duration: number): Promise<any>
 export function createHoneyPot(statesObject: object, options?: HoneyPotOptions): Store
 export function extract(extractMethod: Function, component: Function): Function
 export function resetStoreToInitialState(): void
-export function canBeOneOf(optionOne: any, optionTwo: any): Function
+export function canBeOneOf(...args: any[]): Function
 export function arrayOf(arrayItem: any): Function
-export function anyValue(initalState: any): Function
+export function anyValue(initalState?: any): Function
