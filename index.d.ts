@@ -2,10 +2,14 @@ import { Store } from "redux"
 
 declare module "redux-honey"
 
+type ResetStateOptions = {
+  keepKeyValues?: string[]
+}
+
 type HoneyState = {
   get: (keyChain?: string, options?: object) => any
   set: (objectValues: object) => void
-  reset: () => void
+  reset: (options?: ResetStateOptions) => void
   resetKey: (key: string) => void
 }
 

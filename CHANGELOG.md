@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.6**
+- Added typescript options for `state.reset`
+
 ### **6.1.5**
 - Fixed argument type error for empty `state.get()` call
 - Fixed argument type error for `canBeOneOf()`
