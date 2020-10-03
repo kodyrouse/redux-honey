@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.1.7**
+- Updated `README.md`
+
 ### **6.1.6**
 - Added typescript options for `state.reset`
 

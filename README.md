@@ -6,8 +6,8 @@ In a lot of ways, redux is *fantastic* at what it does. The problems begin to ar
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
-- No need for ```react-redux``` or ```redux-thunk```/```redux-saga``` **(though redux-honey still works with react-redux)**
-- Safety checks & warnings to prevent accidental state updates && state-binding for state that doesn't exist
+- No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
+- Built-in typescript declarations
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
 # Installation
@@ -45,25 +45,24 @@ const store = createHoneyPot({
  funWithReduxHoney
 });
 
-
-// No need to add your store in <Provider /> by default
-// (only if you plan on using the built-in extract() method)
-ReactDOM.render(
-  <App />,
- document.getElementById('root')
-)
-
-// If it's a pain to migrate away from react-redux,
-// you can still pass in your store like usual
+// You are able to pass in the store returned from
+// `createHoneyPot` into <Provider>
 ReactDOM.render(
   <Provider store={store}>
    <App />
   </Provider>,
  document.getElementById('root')
 )
+
+// If you want to use the built-in extract method instead,
+// You don't need to wrap your app in anything
+ReactDOM.render(
+  <App />,
+ document.getElementById('root')
+)
 ```
 
-By default, ```redux-honey``` comes built-in with a connect-like method called ```extract``` to bind state to react components. This makes it not necessary to use a wrapper component like ```<Provider />```. However, if you still want to use ```react-redux``` & ```connect``` in your project (or if you don't feel like migrating), you can still pass in your store into ```<Provider />``` with issue.
+By default, ```redux-honey``` comes built-in with a state binding method called ```extract``` for react components. This makes it not necessary to use a wrapper component like ```<Provider />```. However, if you still want to use ```react-redux``` & ```connect``` in your project (or if you don't want to migrate all uses of ```connect```), you can still pass in your store into ```<Provider />``` without issue. I actually recommend this over using extract.
 
 
 ## addHoney(stateKey, initialState)
