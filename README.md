@@ -6,8 +6,8 @@ In a lot of ways, redux is *fantastic* at what it does. The problems begin to ar
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
-- No need for ```react-redux```, ```redux-thunk```, or ```redux-saga```
-- Safety checks & warnings to prevent accidental state updates && state-binding for state that doesn't exist
+- No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
+- Built-in typescript declarations
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
 # Installation
@@ -27,31 +27,42 @@ Call ```createHoneyPot``` to initialize your store. Pass in an object of all of 
 - **combinedState** *(required)* - object - An object that contains all states returned from calling ```addHoney()```
 
 ### Returns
-- null
+- **Redux store**
 
 ```js
 import { createHoneyPot, addHoney } from "redux-honey";
 
 
-// "addHoney" creates a new piece of state that can be added to "createHoneyPot"
+// "addHoney" creates a new piece of state
+//that can be added to "createHoneyPot"
 const funWithReduxHoney = addHoney("funWithReduxHoney", {
  isFun: true,
  favFood: "pizza"
 });
 
 // Calling "createHoneyPot" creates your redux honey store
-createHoneyPot({
+const store = createHoneyPot({
  funWithReduxHoney
 });
 
+// You are able to pass in the store returned from
+// `createHoneyPot` into <Provider>
+ReactDOM.render(
+  <Provider store={store}>
+   <App />
+  </Provider>,
+ document.getElementById('root')
+)
 
-// No need to wrap your main <App /> component in anything like <Provider></Provider>
-// Ensure that your store is imported before your main rendered component (<App /> in this case)
+// If you want to use the built-in extract method instead,
+// You don't need to wrap your app in anything
 ReactDOM.render(
   <App />,
  document.getElementById('root')
-);
+)
 ```
+
+By default, ```redux-honey``` comes built-in with a state binding method called ```extract``` for react components. This makes it not necessary to use a wrapper component like ```<Provider />```. However, if you still want to use ```react-redux``` & ```connect``` in your project (or if you don't want to migrate all uses of ```connect```), you can still pass in your store into ```<Provider />``` without issue. I actually recommend this over using extract.
 
 
 ## addHoney(stateKey, initialState)
@@ -70,7 +81,9 @@ Example:
 
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
+// addHoney() returns a self-contained state object
+// that contains four methods:
+// state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: "redux-honey"
@@ -93,7 +106,8 @@ state.get();
 // Updates state
 state.set();
 
-// Resets key back to its starting value set on initialState that was passed in addHoney
+// Resets key back to its starting value set on initialState
+// that was passed in addHoney
 state.resetKey();
 
 // Reset back to the initialState that was passed in addHoney
@@ -115,7 +129,9 @@ Example:
 ```js
 import { addHoney } from "redux-honey";
 
-// addHoney() returns a self-contained state object that contains four methods: state.get(), state.set(), state.resetKey(), and state.reset()
+// addHoney() returns a self-contained state object
+// that contains four methods:
+// state.get(), state.set(), state.resetKey(), and state.reset()
 const state = addHoney("funWithReduxHoney", {
  loveProgramming: false,
  favLibrary: ""
@@ -134,7 +150,8 @@ As a safety check when calling ```state.set()```, your passed payload can't cont
 
  
 ```js
-// This entire call would fail because isGoingToFailToUpdate was not defined on the initialState
+// This entire call would fail because
+// isGoingToFailToUpdate was not defined on the initialState
 state.set({ favLibrary: "redux-honey", isGoingToFailToUpdate: true });
 ```
  
@@ -169,7 +186,8 @@ This one is *pretty* neat, so get yo popcorn ready! 🍿 Here's a quick example:
  }
 }
 
-// If I wanted to get the sportingAbilities array, you pass an in-order list of keys like so:
+// If I wanted to get the sportingAbilities array,
+// you pass an in-order list of keys like so:
 state.get("bodyDetails.athletics.sportingAbilities");
 ```
 
@@ -221,7 +239,8 @@ const state = addHoney("funWithReduxHoney", {
 // "friend" will be { id: 45, name: "Johnny Boy" }
 const friend = state.get("friends.[id=45]");
 
-// This returns null because no object in the friends array has a name "Frank Sinatra"
+// This returns null because no object in the friends
+// array has a name "Frank Sinatra"
 const emptyFriend = state.get("friends.[name=Frank Sinatra]");
 ```
 

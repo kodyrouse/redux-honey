@@ -1,6 +1,26 @@
 
 # ChangeLog
 
+### **6.1.7**
+- Updated `README.md`
+
+### **6.1.6**
+- Added typescript options for `state.reset`
+
+### **6.1.5**
+- Fixed argument type error for empty `state.get()` call
+- Fixed argument type error for `canBeOneOf()`
+- Fixed argument type error for `anyValue()`
+
+### **6.1.4**
+- Updated README.md
+
+### **6.1.3**
+- Now it returns the built redux store to play nicely with react-redux
+
+### **6.1.2**
+- Added `options` for type checking `createHoneyPot`
+
 ### **6.1.1**
 - Added typescript type declarations
 
