@@ -6,20 +6,17 @@ type ResetStateOptions = {
   keepKeyValues?: string[]
 }
 
-type HoneyState = {
+type HoneyState<T> = {
   get: (keyChain?: string, options?: object) => any
-  set: (objectValues: object) => void
+  set: (objectValues: Partial<T>) => void
   reset: (options?: ResetStateOptions) => void
   resetKey: (key: string) => void
 }
 
-type HoneyPotOptions = {
-  typeSafe?: boolean
-}
+export function addHoney<T>(key: string, initialState: T): HoneyState<T>
 
-export function addHoney(key: string, initialState: object): HoneyState
 export function nap(duration: number): Promise<any>
-export function createHoneyPot(statesObject: object, options?: HoneyPotOptions): Store
+export function createHoneyPot(statesObject: object): Store
 export function extract(extractMethod: Function, component: Function): Function
 export function resetStoreToInitialState(): void
 export function canBeOneOf(...args: any[]): Function
