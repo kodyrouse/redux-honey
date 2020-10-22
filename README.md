@@ -7,7 +7,7 @@ In a lot of ways, redux is *fantastic* at what it does. The problems begin to ar
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
 - No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
-- Built-in typescript declarations
+- Built-in typescript support
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
 # Installation
