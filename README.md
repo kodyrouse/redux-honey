@@ -93,6 +93,24 @@ const state = addHoney("funWithReduxHoney", {
 export default state;
 ```
 
+### Typescript 
+There's also typescript generic for typing your `intialState` and your `state.set` method calls
+
+```js
+type State = {
+ loveProgramming: boolean
+ favLibrary: string
+}
+
+const state = addHoney<State>("funWithReduxHoney", {
+ loveProgramming: false,
+ favLibrary: "redux-honey",
+ name: "Steve Smith" // Typescript will yell at ya for this!
+});
+
+// Typescript will yell at ya for this!
+state.set({ loveProgramming: "true" });
+```
 
 ## state
 
