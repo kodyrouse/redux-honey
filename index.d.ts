@@ -6,22 +6,46 @@ type ResetStateOptions = {
   keepKeyValues?: string[]
 }
 
-type HoneyState = {
-  get: (keyChain?: string, options?: object) => any
-  set: (objectValues: object) => void
+type HoneyState<T> = {
+  get: (keyChain?: string, options?: object) => Partial<T>
+  set: (objectValues: Partial<T>) => void
   reset: (options?: ResetStateOptions) => void
   resetKey: (key: string) => void
 }
 
-type HoneyPotOptions = {
-  typeSafe?: boolean
-}
+/**
+ * 
+ * @param key 
+ * @param initialState 
+ * Creates a piece of state that is then added to createHoneyPot
+ */
+export function addHoney<T>(key: string, initialState: T): HoneyState<T>
 
-export function addHoney(key: string, initialState: object): HoneyState
+/**
+ * 
+ * @param duration 
+ * Pauses for a given amount of time
+ */
 export function nap(duration: number): Promise<any>
-export function createHoneyPot(statesObject: object, options?: HoneyPotOptions): Store
+
+/**
+ * 
+ * @param statesObject
+ * Used to create your redux-honey store. If using with react and react-redux, pass the returned store
+ * into <Provider> component
+ */
+export function createHoneyPot(statesObject: object): Store
+
+/**
+ * 
+ * @param extractMethod 
+ * @param component 
+ * Used to bind state to react components. React-redux's connect() method is recommended over the
+ * extract()
+ */
 export function extract(extractMethod: Function, component: Function): Function
+
+/**
+ * Reset's all store values back to their initial state
+ */
 export function resetStoreToInitialState(): void
-export function canBeOneOf(...args: any[]): Function
-export function arrayOf(arrayItem: any): Function
-export function anyValue(initalState?: any): Function

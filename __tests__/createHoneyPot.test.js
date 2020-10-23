@@ -1,11 +1,11 @@
 import { createHoneyPot, addHoney } from "../";
 
-test("creating store honey pot", () => {
+test("Creates store honey pot", () => {
 
-  const testState = addHoney("test", {
+  const testState = addHoney("testState", {
     name: "Kody",
     age: 28
   });
 
-  expect(createHoneyPot({ testState })).toBe(undefined);
+  expect(createHoneyPot({ testState })).toBeInstanceOf(Object);
 })
