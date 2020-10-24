@@ -7,7 +7,7 @@ type ResetStateOptions = {
 }
 
 type HoneyState<T> = {
-  get: (keyChain?: string, options?: object) => Partial<T>
+  get: (keyChain?: string, options?: object) => any
   set: (objectValues: Partial<T>) => void
   reset: (options?: ResetStateOptions) => void
   resetKey: (key: string) => void
