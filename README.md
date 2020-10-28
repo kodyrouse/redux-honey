@@ -1,13 +1,13 @@
 # 🍯 Redux-Honey 🍯
-A library that makes it *a lot* sweeter to work with advanced redux 🥰
+A typescript-friendly library that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Problems With Plain Redux
-In a lot of ways, redux is *fantastic* at what it does. The problems begin to arise when your application starts scaling - files become *littered* with unnecessary boilerplate code and your store quickly becomes a complicated mess. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
+In a lot of ways, redux is *fantastic* at what it does. As your application scales, files become *littered* with unnecessary boilerplate code and your store quickly becomes unnecessarily complex. It hurts my soul. This is where ```redux-honey``` comes to the rescue 🙌
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
+- Plays nicely with typescript by default
 - No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
-- Built-in typescript support
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
 # Installation

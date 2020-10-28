@@ -7,9 +7,25 @@ type ResetStateOptions = {
 }
 
 type HoneyState<T> = {
+  
+  /**
+   * Gets key-value pairs for this given piece of state in the store
+   */
   get: (keyChain?: string, options?: object) => any
+  
+  /**
+   * Sets key-value pairs for this given piece of state in the store
+   */
   set: (objectValues: Partial<T>) => void
+  
+  /**
+   * Resets the data is this state back to what it was originally set to
+   */
   reset: (options?: ResetStateOptions) => void
+  
+  /**
+   * Resets a given key's value back to its initial value that was set
+   */
   resetKey: (key: string) => void
 }
 
