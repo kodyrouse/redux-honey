@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "6.2.1",
+  "version": "6.2.2",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
@@ -32,12 +32,13 @@
     "react",
     "redux plugin",
     "asynchronous redux",
-    "async",
     "async redux",
     "redux-thunk",
     "redux-saga",
     "redux plugin",
     "react-redux",
-    "typescript"
+    "typescript",
+    "recoil",
+    "flux"
   ]
 }

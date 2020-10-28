@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.2.2**
+- Improved typescript support docs
+
 ### **6.1.7**
 - Updated `README.md`
 
