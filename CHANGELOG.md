@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.2.3**
+- Updated docs
+
 ### **6.2.2**
 - Improved typescript support docs
 
