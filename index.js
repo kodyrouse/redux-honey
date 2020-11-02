@@ -179,6 +179,9 @@ const createGetState = stateKey => (string, options) => {
 		return handleStoreNotSetError(`state.get() for ${stateKey}`);
 
 	try {
+		
+		if (string)
+			log.warn("Passing strings to received nested pieces of state will no longer be support in newer versions (6.3.0)");
 
 		options = setGetStateOptions(options, stateKey);
 		let state = getRootStateItemByStateKey(stateKey);
