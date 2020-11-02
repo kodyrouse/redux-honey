@@ -2,6 +2,9 @@
 # ChangeLog
 
 ### **6.2.3**
+- Added deprecation warning for `state.get()` with a given string value
+
+### **6.2.3**
 - Updated docs
 
 ### **6.2.2**
