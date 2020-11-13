@@ -1,15 +1,6 @@
 # 🍯 Redux-Honey 🍯
 A typescript-friendly library that makes it *a lot* sweeter to work with advanced redux 🥰
 
-## Before Getting Started 
-While this library uses redux behind the scenes, I would highly recommend approaching this library with a completely fresh mindset on global state management. This library was purposefully designed with the intention to get away from the core concepts in redux like `reducers`, `action types`, `action creators`, etc.
-
-# Benefits To Using Redux-Honey
-- Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
-- Plays nicely with typescript by default
-- No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
-- Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
-
 # Installation
 
 ```js
@@ -19,6 +10,16 @@ npm i redux-honey
 // With yarn
 yarn add redux-honey
 ```
+
+## Before Getting Started 
+While this library uses redux behind the scenes, I would highly recommend approaching this library with a completely fresh mindset on global state management. This library was purposefully designed with the intention to get away from the core concepts in redux like `reducers`, `action types`, `action creators`, etc.
+
+# Benefits To Using Redux-Honey
+- Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
+- Has support for plain redux reducers so you don't have to do a hard transition with your entire store
+- Plays nicely with typescript by default
+- No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
+- Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 
 # Initialize
 Call ```createHoneyPot``` to initialize your store. Pass in an object of all of your created state pieces
@@ -33,16 +34,33 @@ Call ```createHoneyPot``` to initialize your store. Pass in an object of all of 
 import { createHoneyPot, addHoney } from "redux-honey";
 
 
-// "addHoney" creates a new piece of state
-//that can be added to "createHoneyPot"
+// "addHoney" creates a new piece of state that can be added to "createHoneyPot"
 const funWithReduxHoney = addHoney("funWithReduxHoney", {
  isFun: true,
  favFood: "pizza"
 });
 
+
+// You can also pass in traditional redux reducers into createHoneyPot
+// This allows you to migrate your store over as you go
+const initialState = { isFun: true, favFood: "pizza" };
+const funWithReduxHoneyReducer = (state = initialState, { type, payload }) => {
+  switch(type) {
+    case "SET_IS_FUN":
+      return { ...state, isFun: payload.isFun };
+    case "SET_FAV_FOOD":
+      return { ...state, favFood: payload.favFood };
+    default:
+      return state;
+  }
+}
+
 // Calling "createHoneyPot" creates your redux honey store
+// It also accepts plain redux reducers so you don't have to
+// transition your entire store at once
 const store = createHoneyPot({
- funWithReduxHoney
+ funWithReduxHoney,
+ funWithReduxHoneyReducer
 });
 
 // You are able to pass in the store returned from

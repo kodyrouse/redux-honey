@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.3.0**
+- Added support for passing in plain redux reducers to allow users to transition away from their redux stores
+
 ### **6.2.3**
 - Added deprecation warning for `state.get()` with a given string value
 
