@@ -2,7 +2,7 @@ import { createHoneyPot, addHoney } from "../";
 
 test("Creates store honey pot", () => {
 
-  const testState = addHoney("testState", {
+  const testState = addHoney("state", {
     name: "Kody",
     age: 28
   });

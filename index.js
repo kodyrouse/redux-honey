@@ -122,28 +122,41 @@ const getRootReducer = (combinedState) => {
 
 	const rootReducer = {};
 
-	Object.keys(combinedState).forEach((stateKey, index) => {
+	Object.keys(combinedState).forEach((objectKey, index) => {
 
-		const state = combinedState[stateKey];
-
-		if (!state.__reducer)
-			return log.error(`Passed state ${stateKey} into createHoneyPot() was not created with addHoney()`);
-
-		rootReducer[stateKey] = state.__reducer;
-
-		delete state.__reducer;
+		const state = combinedState[objectKey];
+		
+		if (!isReducerOrAddHoney(state)) {
+			log.error(`Passed state ${(isAddHoney(state)) ? state.__stateKey : objectKey} into createHoneyPot() was not created with addHoney() nor is a redux reducer`);
+		}
+		
+		if (typeof state === "function") {
+			rootReducer[objectKey] = state;
+		} else if (isAddHoney(state)) {
+			rootReducer[state.__stateKey] = state.__reducer;
+			delete state.__reducer;
+		}
 	});
-
+	
 	return combineReducers(rootReducer);
 }
 
+const isReducerOrAddHoney = (state) => (
+	typeof state === "function" || isAddHoney(state)
+)
+
+const isAddHoney = (object) => (
+	!Array.isArray(object)
+	&& typeof object === "object"
+	&& object.__reducer !== undefined
+)
+
 const createReducer = (stateKey, initialState) => (
-	(state = initialState, { type, payload }) => ((type === stateKey)
+	(state = initialState, { type, payload }) => (type === stateKey)
 		? updateState(state, payload)
 		: (type === RESET_STORE)
 		? deepClone(initialStates[stateKey])
 		: state
-	)
 )
 
 const updateState = (state, payload) => (
