@@ -11,15 +11,53 @@ npm i redux-honey
 yarn add redux-honey
 ```
 
+### Quick Use Overview
+```js
+import { addHoney, createHoneyPot } from "redux-honey";
+
+// Create a state object with addHoney
+const state = addHoney("overviewState", {
+ favFood: "pizza",
+ user: {
+   name: "",
+   age: 0
+ },
+ friends: []
+});
+
+// Creates redux-honey store
+createHoneyPot({ state });
+
+// state.get() returns completely mutable state key-values
+const { user } = state.get();
+user.name = "Bob Barker";
+user.age = 96;
+
+// Sets "user" key with updated name / age
+state.set({ user });
+
+// state.set also allows you to pass in multiple key-value pairs
+const { friends } = state.get();
+friends.push("Happy Gilmore");
+state.set({ friends, favFood: "Hot Pockets" });
+
+// Allows you to reset state back to it's initially-set values
+state.reset();
+
+// Allows you to just reset a key back to its initial value
+state.resetKey("favFood");
+```
+There's much more to this library, so sit tight! 🍿
+
 ## Before Getting Started 
-While this library uses redux behind the scenes, I would highly recommend approaching this library with a completely fresh mindset on global state management. This library was purposefully designed with the intention to get away from the core concepts in redux like `reducers`, `action types`, `action creators`, etc.
+I highly recommend approaching this library with a fresh mindset on global state management. While it still has the concept of a global store, this library was purposefully designed to get away from core concepts in redux like `reducers`, `action types`, and `actions` (though it still supports traditional redux reducers to allow you to transition your store as you go!). `addHoney` state pieces work in a beautiful, modular manner and works only with the initially given key-value pairs that are set at initialization!
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
-- Has support for plain redux reducers so you don't have to do a hard transition with your entire store
 - Plays nicely with typescript by default
 - No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
+- Has support for plain redux reducers so you don't have to do a hard transition with your entire store
 
 # Initialize
 Call ```createHoneyPot``` to initialize your store. Pass in an object of all of your created state pieces
