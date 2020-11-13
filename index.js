@@ -125,19 +125,19 @@ const getRootReducer = (combinedState) => {
 	Object.keys(combinedState).forEach((objectKey, index) => {
 
 		const state = combinedState[objectKey];
-
+		
 		if (!isReducerOrAddHoney(state)) {
-			log.error(`Passed state ${(isAddHoney(state)) ? state.__stateKey : ""} into createHoneyPot() was not created with addHoney()`);
+			log.error(`Passed state ${(isAddHoney(state)) ? state.__stateKey : objectKey} into createHoneyPot() was not created with addHoney() nor is a redux reducer`);
 		}
 		
 		if (typeof state === "function") {
-			rootReducer[state.__stateKey] = state;
-		} else if (typeof state === "object" && state.__reducer) {
+			rootReducer[objectKey] = state;
+		} else if (isAddHoney(state)) {
 			rootReducer[state.__stateKey] = state.__reducer;
 			delete state.__reducer;
 		}
 	});
-
+	
 	return combineReducers(rootReducer);
 }
 
@@ -145,11 +145,11 @@ const isReducerOrAddHoney = (state) => (
 	typeof state === "function" || isAddHoney(state)
 )
 
-const isAddHoney = (object) => {
+const isAddHoney = (object) => (
 	!Array.isArray(object)
 	&& typeof object === "object"
-	&& object.__reducer
-}
+	&& object.__reducer !== undefined
+)
 
 const createReducer = (stateKey, initialState) => (
 	(state = initialState, { type, payload }) => (type === stateKey)
