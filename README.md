@@ -11,7 +11,7 @@ npm i redux-honey
 yarn add redux-honey
 ```
 
-### Quick Use Overview
+## Quick Use Overview
 ```js
 import { addHoney, createHoneyPot } from "redux-honey";
 
