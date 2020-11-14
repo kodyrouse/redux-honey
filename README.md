@@ -19,10 +19,9 @@ import { addHoney, createHoneyPot } from "redux-honey";
 const state = addHoney("overviewState", {
  favFood: "pizza",
  user: {
-   name: "",
+   name: "Bob Barker",
    age: 0
  },
- friends: []
 });
 
 // Creates redux-honey store
@@ -30,16 +29,11 @@ createHoneyPot({ state });
 
 // state.get() returns completely mutable state key-values
 const { user } = state.get();
-user.name = "Bob Barker";
 user.age = 96;
 
 // Sets "user" key with updated name / age
-state.set({ user });
-
-// state.set also allows you to pass in multiple key-value pairs
-const { friends } = state.get();
-friends.push("Happy Gilmore");
-state.set({ friends, favFood: "Hot Pockets" });
+// It also allows you to set multiple keys at once
+state.set({ user, favFood: "Hot Pockets" });
 
 // Allows you to reset state back to it's initially-set values
 state.reset();
