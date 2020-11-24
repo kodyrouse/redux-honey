@@ -46,7 +46,7 @@ let extract = (mapHoneyToProps, WrappedComponent) => {
 	return WrappedComponent;
 };
 
-
+console.log("here");
 
 const createHoneyPot = (combinedState, options) => {
 
