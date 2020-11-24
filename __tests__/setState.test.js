@@ -17,7 +17,7 @@ describe("state.set properly sets values", () => {
   
   test("state.set properly sets string values", () => {
     expect(testState.get("name")).toBe("Kody");
-    testState.set({ name: "Sarah" });
+    testState.set({ name: "Sara" });
     expect(testState.get("name")).toBe("Sarah");
   });
   
