@@ -195,7 +195,6 @@ const createResetState = stateKey => options => {
 	if (!store)
 		return handleStoreNotSetError(`state.reset() for ${stateKey}`);
 
-	options = setResetStateOptions(options, stateKey);
 	const { keepKeyValues } = options;
 
 	let newState = deepClone(initialStates[stateKey]);
@@ -351,37 +350,5 @@ const getArrayItemByPropertyKey = (state, key) => {
 }
 
 const setGetStateOptions = (options = {}, stateKey) => {
-
-	if (typeof options !== "object" || Array.isArray(options))
-		throw new Error(`Invalid options type for ${stateKey} state.get(). Please ensure the passed options are an object`);
-
-	const getStateOptions = Object.assign({}, defaultGetStateOptions, options);
-	confirmGetStateOptionsAreValid(getStateOptions, stateKey);
-
 	return Object.assign({}, defaultGetStateOptions, options);
-}
-
-const setResetStateOptions = (options = {}, stateKey) => {
-
-	if (typeof options !== "object" || Array.isArray(options))
-		throw new Error(`Invalid options type for ${stateKey} state.reset(). Please ensure the passed options are an object`);
-
-	return Object.assign({}, defaultResetStateOptions, options);
-}
-
-const confirmGetStateOptionsAreValid = (options, stateKey) => {
-
-	const { getItemIndex, returnOriginal } = options;
-
-	if (getItemIndex && returnOriginal)
-		throwInvalidGetStateOptionsError(stateKey, "you have returnOriginal && getItemIndex set to true, which is not possible");
-
-	Object.keys(options).forEach(option => {
-		if (typeof defaultGetStateOptions[option] === "undefined")
-			throwInvalidGetStateOptionsError(stateKey, `${option} is not a usable option. Please checkout https://github.com/kodyrouse/redux-honey for available options`);
-	});
-}
-
-const throwInvalidGetStateOptionsError = (stateKey, message) => {
-	throw new Error(`Invalid options for ${stateKey} state.get() - ${message}`);
 }
