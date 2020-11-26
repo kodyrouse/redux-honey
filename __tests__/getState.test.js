@@ -37,4 +37,10 @@ describe("state.get properly returns values", () => {
     expect(testState.get("aboutMe")).toBeInstanceOf(Object);
     expect(testState.get("aboutMe.isTall")).toBe(false);
   });
+  
+  test("state.get throws error for keys that do not exist", () => {
+    const consoleSpy = jest.spyOn(console, "error");
+    testState.get("random");
+    expect(consoleSpy).toHaveBeenCalled();
+  })
 });
