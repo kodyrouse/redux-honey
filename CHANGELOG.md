@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.4.1**
+- Removed unused dependencies
+
 ### **6.4.0**
 - Improved test coverage
 
