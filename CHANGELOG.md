@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.4.0**
+- Improved test coverage
+
 ### **6.3.0**
 - Added support for passing in plain redux reducers to allow users to transition away from their redux stores
 

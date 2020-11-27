@@ -10,7 +10,11 @@ describe("state.get properly returns values", () => {
     aboutMe: {
       isTall: false
     },
-    favFoods: ["pizza", "burgers", "steak"]
+    favFoods: ["pizza", "burgers", "steak"],
+    friends: [
+      { id: 1, name: "Bob" },
+      { id: 2, name: "Frank" }
+    ]
   });
 
   createHoneyPot({ testState });
@@ -29,12 +33,44 @@ describe("state.get properly returns values", () => {
   
   test("state.get properly returns array value", () => {
     expect(testState.get("friends")).toBeInstanceOf(Array);
-    expect(testState.get("friends")).toHaveLength(0);
+    expect(testState.get("friends")).toHaveLength(2);
     expect(testState.get("favFoods")[2]).toBe("steak");
   });
   
   test("state.get properly returns object", () => {
     expect(testState.get("aboutMe")).toBeInstanceOf(Object);
     expect(testState.get("aboutMe.isTall")).toBe(false);
+  });
+  
+  test("state.get throws error for keys that do not exist", () => {
+    const consoleSpy = jest.spyOn(console, "error");
+    testState.get("random");
+    expect(consoleSpy).toHaveBeenCalled();
+  });
+  
+  test("state.get retrieves item from array", () => {
+    expect(testState.get(`friends.[id=1]`)).toEqual({ id: 1, name: "Bob" });
+  });
+  
+  test("state.get retrieves item index from array", () => {
+    expect(testState.get(`friends.[id=1]`, { getItemIndex: true })).toEqual(0);
+  });
+  
+  test("state.get throws error for invalid item index from array", () => {
+    const consoleSpy = jest.spyOn(console, "error");
+    testState.get(`friends.[4]`, { getItemIndex: true });
+    expect(consoleSpy).toHaveBeenCalled();
+  });
+  
+  test("state.get retrieves item by index from array", () => {
+    expect(testState.get(`favFoods.[1]`)).toEqual("burgers");
+  });
+  
+  test("state.get returns original value", () => {
+    const steve = { id: 3, name: "Steve" };
+    const friends = testState.get("friends");
+    friends.push(steve);
+    testState.set({ friends });
+    expect(testState.get(`friends.[id=3]`, { returnOriginal: true })).toBe(steve);
   });
 });

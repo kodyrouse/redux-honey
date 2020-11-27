@@ -39,5 +39,11 @@ describe("state.set properly sets values", () => {
     aboutMe.isTall = true;
     testState.set({ aboutMe });
     expect(testState.get("aboutMe.isTall")).toBe(true);
+  });
+  
+  test("state.set logs error for keys that do not exist on initialState", () => {
+    const consoleSpy = jest.spyOn(console, "error");
+    testState.set({ random: true });
+    expect(consoleSpy).toHaveBeenCalled();
   })
 })
