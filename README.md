@@ -1,5 +1,5 @@
 # 🍯 Redux-Honey 🍯
-A typescript-friendly library that makes it *a lot* sweeter to work with advanced redux 🥰
+A dev-friendly library that makes it *a lot* sweeter to work with advanced redux 🥰
 
 # Installation
 
@@ -25,7 +25,7 @@ const state = addHoney("overviewState", {
 });
 
 // Creates redux-honey store
-createHoneyPot({ state });
+const store = createHoneyPot({ state });
 
 // state.get() returns completely mutable state key-values
 const { user } = state.get();
@@ -44,12 +44,12 @@ state.resetKey("favFood");
 There's much more to this library, so sit tight! 🍿
 
 ## Before Getting Started 
-I highly recommend approaching this library with a fresh mindset on global state management. While it still has the concept of a global store, this library was purposefully designed to get away from core concepts in redux like `reducers`, `action types`, and `actions` (though it still supports traditional redux reducers to allow you to transition your store as you go!). `addHoney` state pieces work in a beautiful, modular manner and works only with the initially given key-value pairs that are set at initialization!
+While this still has the concept of a pieces of state combining into a global store, this library was purposefully designed to get away from core concepts in redux like `reducers`, `action types`, and `actions`. `addHoney` state pieces are beautiful, modular objects and works only with the initially given key-value pairs that are given!
 
 # Benefits To Using Redux-Honey
 - Drastically reduces unnecessary file clutter (AKA the heartwarming *redux boilerplate*). You no longer need to hear "reducer" or "action types" again! 🎉
 - Plays nicely with typescript by default
-- No need for ```redux-thunk```, ```redux-saga```, nor ```react-redux``` **(though redux-honey still works with react-redux. We also recommend it)**
+- No need for ```redux-thunk``` nor ```redux-saga```
 - Built-in methods like ```state.reset()``` and ```resetStoreToInitialState```
 - Has support for plain redux reducers so you don't have to do a hard transition with your entire store
 
@@ -95,24 +95,19 @@ const store = createHoneyPot({
  funWithReduxHoneyReducer
 });
 
-// You are able to pass in the store returned from
-// `createHoneyPot` into <Provider>
+/**
+ * If you are using this library with React & react-redux,
+ * you are still able to pass the returned store from
+ * createHoneyPot() into <Provider> like usual
+**/
+
 ReactDOM.render(
   <Provider store={store}>
    <App />
   </Provider>,
  document.getElementById('root')
 )
-
-// If you want to use the built-in extract method instead,
-// You don't need to wrap your app in anything
-ReactDOM.render(
-  <App />,
- document.getElementById('root')
-)
 ```
-
-By default, ```redux-honey``` comes built-in with a state binding method called ```extract``` for react components. This makes it not necessary to use a wrapper component like ```<Provider />```. However, if you still want to use ```react-redux``` & ```connect``` in your project (or if you don't want to migrate all uses of ```connect```), you can still pass in your store into ```<Provider />``` without issue. I actually recommend this over using extract.
 
 
 ## addHoney(stateKey, initialState)
@@ -442,84 +437,10 @@ const state = addHoney("funWithReduxHoney", {
  name: "Bob Barker"
 });
 
-
 state.set({ name: "Steve Smith", isLoading: true, favLibrary: "" });
 
 // resets state back to its initialState except for "name"
 state.reset({ keepKeyValues: ["name"] });
-```
-
-## extract(mapHoneyToProps, Component)
-A method to bind state to react components. This is very similiar to the react-redux method ```connect()```, but ```extract()``` will throw warnings if you attempt to bind state pieces that don't exist.
-
-### Arguments
-- **mapHoneyToProps** *(required)* - function - a function that outlines what state pieces you would like to use to pass as props inside your Component
-- **Component** *(required)* - React component
-
-### Returns
-An updated component with the passed props from calling the ```extract()``` method
-
-```js
-import React from "react";
-import { extract } from "redux-honey";
-
-const UserProfile = ({ name, birthDay }) => (
- <div>
-  <p>{name}</p>
-  <p>{birthDay}</p>
- </div>
-)
-
-/*
- user state structure
-
- user: {
-  name: "Steve Smith",
-  birthday: "June 19th 1990",
-  friends: [],
-  favSongs: []
- }
-*/
-
-// The method used to determine what state pieces you want passed as props
-const mapHoneyToProps = store => ({
- name: store.user.name,
- birthDay: store.user.birthDay
-});
-
-export default extract(mapHoneyToProps, UserProfile);
-```
-
-To prevent unknown misspelling problems when using extract, redux-honey will throw a warning that something you were asking for doesn't exist on that state:
-
-```js
-import React from "react";
-import { extract } from "redux-honey";
-
-const UserProfile = ({ name, birthDay }) => (
- <div>
-  <p>{name}</p>
-  <p>{birthDay}</p>
- </div>
-)
-
-/*
- user state structure
-
- user: {
-  name: "Steve Smith",
-  birthday: "June 19th 1990",
-  friends: [],
-  favSongs: []
- }
-*/
-
-// This will fail && will throw a warning that the key "friendz" doesn't exist on the user
-const mapHoneyToProps = store => ({
- friendz: store.user.friendz
-});
-
-export default extract(mapHoneyToProps, UserProfile);
 ```
  
 ## nap(duration)

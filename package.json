@@ -1,6 +1,6 @@
 {
   "name": "redux-honey",
-  "version": "6.3.2",
+  "version": "6.4.0",
   "description": "Plugin that makes working with redux a little sweeter",
   "main": "index.js",
   "scripts": {
