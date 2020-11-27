@@ -20,7 +20,7 @@ const defaultResetStateOptions = {
 	keepKeyValues: []
 }
 
-const createHoneyPot = (combinedState) => {
+function createHoneyPot(combinedState) {
 
 	if (store !== null)
 		return log.error(`Could not call createHoneyPot() - a redux honeyPot was already created. It's best practice to create one store and add addHoney() state to your store as needed. If your application uses code-splitting techniques, lazy load your components so only one store is loaded & created`);
@@ -32,7 +32,7 @@ const createHoneyPot = (combinedState) => {
 	return store;	
 }
 
-const addHoney = (stateKey, initialState) => {
+function addHoney(stateKey, initialState) {
 
 	if (!isUniqueAndValidStateKey(stateKey))
 		return log.error(`Unable to call addHoney("${stateKey}") - the stateKey must be a unique, non-empty string. The given stateKey was ${stateKey}`);
@@ -53,7 +53,7 @@ const addHoney = (stateKey, initialState) => {
 	}
 }
 
-const resetStoreToInitialState = () => {
+function resetStoreToInitialState() {
 
 	if (!store)
 		return handleStoreNotSetError("resetStoreToInitialState()");
@@ -70,14 +70,14 @@ export {
 
 
 
-const getRootReducer = (combinedState) => {
+function getRootReducer(combinedState) {
 
 	if (Object.keys(combinedState).length === 0)
 		log.error(`No state pieces were passed into createHoneyPot(). Please ensure you pass in an object of state pieces created with the addHoney() method.`);
 
 	const rootReducer = {};
 
-	Object.keys(combinedState).forEach((objectKey, index) => {
+	Object.keys(combinedState).forEach(function (objectKey) {
 
 		const state = combinedState[objectKey];
 		
@@ -96,113 +96,125 @@ const getRootReducer = (combinedState) => {
 	return combineReducers(rootReducer);
 }
 
-const isReducerOrAddHoney = (state) => (
-	typeof state === "function" || isAddHoney(state)
-)
+function isReducerOrAddHoney(state) {
+	return typeof state === "function" || isAddHoney(state)
+}
 
-const isAddHoney = (object) => (
-	!Array.isArray(object)
-	&& typeof object === "object"
-	&& object.__reducer !== undefined
-)
+function isAddHoney(object) {
+	return (
+		!Array.isArray(object)
+		&& typeof object === "object"
+		&& object.__reducer !== undefined
+	)
+}
 
-const createReducer = (stateKey, initialState) => (
-	(state = initialState, { type, payload }) => (type === stateKey)
+function createReducer(stateKey, initialState) {
+	return function (state = initialState, { type, payload }) {
+		return (type === stateKey)
 		? updateState(state, payload)
 		: (type === RESET_STORE)
 		? deepClone(initialStates[stateKey])
 		: state
-)
-
-const updateState = (state, payload) => (
-	Object.assign({}, state, payload)
-)
-
-const createSetState = stateKey => payload => {
-
-	if (!store) return handleStoreNotSetError(`state.set() for ${stateKey}`);
-
-	try {
-
-		const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
-		if (invalidKeysInPayload.length) 
-			throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
-
-		// if (createHoneyPotOptions.typeSafe) {
-		// 	const payloadTypeCheckErrors = typeCheckPayload(payload, statesTypeMap[stateKey]);
-		// 	if (payloadTypeCheckErrors.length)
-		// 		throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload had the following typeSafe errors: \n ${payloadTypeCheckErrors}`);
-		// }
-
-		store.dispatch({ type: stateKey, payload });
-
-	} catch(error) {
-		console.error(error);
 	}
 }
 
-const createGetState = stateKey => (string, options) => {
+function updateState(state, payload) {
+	return Object.assign({}, state, payload)
+}
 
-	if (!store)
-		return handleStoreNotSetError(`state.get() for ${stateKey}`);
+function createSetState(stateKey) {
+	return function (payload) {
 
-	try {
+		if (!store) return handleStoreNotSetError(`state.set() for ${stateKey}`);
 
-		options = setGetStateOptions(options, stateKey);
-		let state = getRootStateItemByStateKey(stateKey);
+		try {
 
-		if (!canGetNestedStatePiecesWithString(string))
-			return state;
+			const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
+			if (invalidKeysInPayload.length) 
+				throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
 
-		const keys = string.split(".");
-		let keychain = "";
+			// if (createHoneyPotOptions.typeSafe) {
+			// 	const payloadTypeCheckErrors = typeCheckPayload(payload, statesTypeMap[stateKey]);
+			// 	if (payloadTypeCheckErrors.length)
+			// 		throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload had the following typeSafe errors: \n ${payloadTypeCheckErrors}`);
+			// }
 
-		keys.forEach(key => {
+			store.dispatch({ type: stateKey, payload });
 
-			state = getStatePieceWithKey(state, key, options);
-			keychain += (keychain.length) ? `.${key}` : key;
-
-			if (typeof state === "undefined")
-				throw new Error(`Redux-Honey: \n Could not call state.get() for state "${stateKey}". Please ensure the string passed is a dot-separated string & the requested state ("${keychain}") does not exist on "${stateKey}"`);
-		});
-
-		return (options.returnOriginal)
-			? state
-			: deepClone(state);
-	} catch(error) {
-		console.error(error);
+		} catch(error) {
+			console.error(error);
+		}
 	}
 }
 
-const createResetKey = stateKey => key => {
+function createGetState(stateKey) {
+	return function (string, options) {
 
-	if (!store)
-		return handleStoreNotSetError(`state.reset() for ${stateKey}`);
+		if (!store)
+			return handleStoreNotSetError(`state.get() for ${stateKey}`);
 
-	if (!key)
-		return log.warn(`Could not call state.resetKey() - No key given`);
+		try {
 
-	const initialStateForKey = initialStates[stateKey][key];
-	if (typeof initialStateForKey === "undefined")
-		return log.warn(`Could not call state.resetKey() - The given key "${key}" does not exist for stateKey "${stateKey}"`);
+			options = setGetStateOptions(options, stateKey);
+			let state = getRootStateItemByStateKey(stateKey);
 
+			if (!canGetNestedStatePiecesWithString(string))
+				return state;
 
-	store.dispatch({ type: stateKey, payload: { [key]: deepClone(initialStateForKey) }});
+			const keys = string.split(".");
+			let keychain = "";
+
+			keys.forEach(function (key) {
+
+				state = getStatePieceWithKey(state, key, options);
+				keychain += (keychain.length) ? `.${key}` : key;
+
+				if (typeof state === "undefined")
+					throw new Error(`Redux-Honey: \n Could not call state.get() for state "${stateKey}". Please ensure the string passed is a dot-separated string & the requested state ("${keychain}") does not exist on "${stateKey}"`);
+			});
+
+			return (options.returnOriginal)
+				? state
+				: deepClone(state);
+		} catch(error) {
+			console.error(error);
+		}
+	}
 }
 
-const createResetState = stateKey => options => {
+function createResetKey(stateKey) {
+	return function (key) {
 
-	if (!store)
-		return handleStoreNotSetError(`state.reset() for ${stateKey}`);
+		if (!store)
+			return handleStoreNotSetError(`state.reset() for ${stateKey}`);
 
-	const { keepKeyValues } = options;
+		if (!key)
+			return log.warn(`Could not call state.resetKey() - No key given`);
 
-	let newState = deepClone(initialStates[stateKey]);
+		const initialStateForKey = initialStates[stateKey][key];
+		if (typeof initialStateForKey === "undefined")
+			return log.warn(`Could not call state.resetKey() - The given key "${key}" does not exist for stateKey "${stateKey}"`);
 
-	if (keepKeyValues.length)
-		newState = Object.assign({}, newState, getObjectValuesForKeys(stateKey, keepKeyValues));
 
-	store.dispatch({ type: stateKey, payload: newState });
+		store.dispatch({ type: stateKey, payload: { [key]: deepClone(initialStateForKey) }});
+	}
+}
+
+function createResetState(stateKey) {
+	return function (options) {
+
+		if (!store)
+			return handleStoreNotSetError(`state.reset() for ${stateKey}`);
+
+		const { keepKeyValues } = options;
+
+		let newState = deepClone(initialStates[stateKey]);
+
+		if (keepKeyValues.length)
+			newState = Object.assign({}, newState, getObjectValuesForKeys(stateKey, keepKeyValues));
+
+		store.dispatch({ type: stateKey, payload: newState });
+	}
 }
 
 
@@ -213,32 +225,45 @@ const createResetState = stateKey => options => {
 
 
 
-const isUniqueAndValidStateKey = stateKey => (
-	stateKey && typeof stateKey === "string" && !stateKeys[stateKey] && stateKey.length > 0
-)
+function isUniqueAndValidStateKey(stateKey) {
+	return (
+		stateKey
+		&& typeof stateKey === "string"
+		&& !stateKeys[stateKey]
+		&& stateKey.length > 0
+	)
+}
 
-const addStateKeyToStateKeys = stateKey => {
+function addStateKeyToStateKeys(stateKey) {
 	stateKeys[stateKey];
 }
 
-const addInitialStateToInitialStates = (stateKey, initialState) => {
+function addInitialStateToInitialStates(stateKey, initialState) {
 	initialStates[stateKey] = deepClone(initialState);
 }
 
-const canGetNestedStatePiecesWithString = string => (
-	string && typeof string === "string" && string.length > 0
-)
+function canGetNestedStatePiecesWithString(string) {
+	return (
+		string
+		&& typeof string === "string"
+		&& string.length > 0
+	)
+}
 
-const isCombinedStateValid = combinedState => (
-	combinedState && typeof combinedState === "object" && Object.keys(combinedState).length
-)
+function isCombinedStateValid(combinedState) {
+	return (
+		combinedState
+		&& typeof combinedState === "object"
+		&& Object.keys(combinedState).length
+	)
+}
 
-const handleStoreNotSetError = uncalledMethodName => {
+function handleStoreNotSetError(uncalledMethodName) {
 	log.error(`Unable to call ${uncalledMethodName} - the store was not set`);
 	return null
 }
 
-const getPropertyKeyAndValue = key => {
+function getPropertyKeyAndValue(key) {
 
 	const splitKeyAndValue = key.slice(1, -1).split("=");
 	if (splitKeyAndValue.length !== 2)
@@ -252,15 +277,17 @@ const getPropertyKeyAndValue = key => {
 	}
 }
 
-const getKeyForInitialState = stateKey => `${stateKey}${RESET_STORE}`;
+function getKeyForInitialState(stateKey) {
+	return `${stateKey}${RESET_STORE}`;
+}
 
-const getObjectValuesForKeys = (stateKey, keepKeyValues) => {
+function getObjectValuesForKeys(stateKey, keepKeyValues) {
 
 	const state = getRootStateItemByStateKey(stateKey);
 	let stateToKeep = {};
 
 	const keepKeyValuesLn = keepKeyValues.length;
-	keepKeyValues.forEach(key => {
+	keepKeyValues.forEach(function (key) {
 		if (typeof state[key] !== "undefined")
 			stateToKeep[key] = state[key]
 		else
@@ -270,7 +297,7 @@ const getObjectValuesForKeys = (stateKey, keepKeyValues) => {
 	return stateToKeep;
 }
 
-const checkIfPayloadKeysExistInState = (stateKey, payload) => {
+function checkIfPayloadKeysExistInState(stateKey, payload) {
 
 	if (!payload)
 		return true;
@@ -278,7 +305,7 @@ const checkIfPayloadKeysExistInState = (stateKey, payload) => {
 	const state = store.getState()[stateKey];
 	let payloadKeyErrors = [];
 
-	Object.keys(payload).forEach(payloadKey => {
+	Object.keys(payload).forEach(function (payloadKey) {
 		if (typeof state[payloadKey] === "undefined") {
 			payloadKeyErrors.push(payloadKey);
 			return;
@@ -289,42 +316,46 @@ const checkIfPayloadKeysExistInState = (stateKey, payload) => {
 }
 
 
-const getRootStateItemByStateKey = stateKey => (
-	store.getState()[stateKey]
-)
+function getRootStateItemByStateKey(stateKey) {
+	return store.getState()[stateKey]
+}
 
-const getStatePieceWithKey = (state, key, options) => ((keyIsPropertyOnArrayObject(key) && options.getItemIndex)
+function getStatePieceWithKey(state, key, options) {
+	return (keyIsPropertyOnArrayObject(key) && options.getItemIndex)
 	? getIndexOfArrayItem(state, key)
 	: keyIsPropertyOnArrayObject(key)
 	? getArrayItemByPropertyKey(state, key)
 	: (keyIsIndexForArrayItem(key))
 	? getArrayItemByIndex(state, key)
 	: state[key]
-);
+}
 
-const keyIsIndexForArrayItem = key => (
-	(key.slice(0, 1) === "[") && (key.slice(key.length - 1, key.length) === "]")
-);
+function keyIsIndexForArrayItem(key) {
+	return (key.slice(0, 1) === "[") && (key.slice(key.length - 1, key.length) === "]")
+};
 
-const keyIsPropertyOnArrayObject = key => (
-	keyIsIndexForArrayItem(key) && (isNaN(key.slice(1, -1)))
-)
+function keyIsPropertyOnArrayObject(key) {
+	return keyIsIndexForArrayItem(key) && (isNaN(key.slice(1, -1)))
+}
 
-const getIndexOfArrayItem = (state, key) => {
+function getIndexOfArrayItem(state, key) {
 
 	if (!Array.isArray(state))
 		throw new Error("Could not get index of item from array - parent state piece is not an array");
 
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
-	const itemIndex = state.findIndex(stateItem => stateItem[propertyKey] === propertyValue);
+	const itemIndex = state.findIndex(function (stateItem) {
+		return stateItem[propertyKey] === propertyValue
+	});
+	
 	if (itemIndex < 0)
 		throw new Error(`No item in the given array was found with ${propertyKey} = ${propertyValue}. Ensure you passed a property key that exists`);
 
 	return itemIndex;
 }
 
-const getArrayItemByIndex = (state, key) => {
+function getArrayItemByIndex(state, key) {
 
 	if (!Array.isArray(state))
 		throw new Error("Could not get item from array - parent state piece is not an array");
@@ -339,16 +370,18 @@ const getArrayItemByIndex = (state, key) => {
 	return state[index];
 }
 
-const getArrayItemByPropertyKey = (state, key) => {
+function getArrayItemByPropertyKey(state, key) {
 
 	if (!Array.isArray(state))
 		throw new Error("Could not get item from array - parent state piece is not an array");
 
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
-	return state.find(stateItem => stateItem[propertyKey] == propertyValue);
+	return state.find(function (stateItem) {
+		return stateItem[propertyKey] == propertyValue
+	});
 }
 
-const setGetStateOptions = (options = {}, stateKey) => {
+function setGetStateOptions(options = {}, stateKey) {
 	return Object.assign({}, defaultGetStateOptions, options);
 }

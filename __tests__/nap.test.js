@@ -12,6 +12,6 @@ describe("nap method properly waits given amount of time before continuing", () 
   test("console.error() for non-numeric argument", () => {
     const consoleSpy = jest.spyOn(console, "error");
     nap("hello");
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
   });
 })

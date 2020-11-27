@@ -45,7 +45,7 @@ describe("state.get properly returns values", () => {
   test("state.get throws error for keys that do not exist", () => {
     const consoleSpy = jest.spyOn(console, "error");
     testState.get("random");
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
   });
   
   test("state.get retrieves item from array", () => {
@@ -59,7 +59,7 @@ describe("state.get properly returns values", () => {
   test("state.get throws error for invalid item index from array", () => {
     const consoleSpy = jest.spyOn(console, "error");
     testState.get(`friends.[4]`, { getItemIndex: true });
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(2);
   });
   
   test("state.get retrieves item by index from array", () => {

@@ -44,6 +44,6 @@ describe("state.set properly sets values", () => {
   test("state.set logs error for keys that do not exist on initialState", () => {
     const consoleSpy = jest.spyOn(console, "error");
     testState.set({ random: true });
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
   })
 })
