@@ -24,12 +24,12 @@ describe("state.reset() & state.resetKey() properly reset state", () => {
   test("state.resetKey() warns for invalid key", () => {
     const consoleSpy = jest.spyOn(console, "warn");
     testState.resetKey("random");
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
   });
   
   test("state.resetKey() warns for no key given", () => {
     const consoleSpy = jest.spyOn(console, "warn");
     testState.resetKey();
-    expect(consoleSpy).toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledTimes(2);
   });
 })

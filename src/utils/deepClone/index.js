@@ -1,5 +1,5 @@
 
-export default input => {
+export default function (input) {
 
 	// Prevents invalid input
 	if (validateNull(input) || !validateInputForDeepClone(input))
@@ -10,13 +10,12 @@ export default input => {
 	return (validateArray(input)) ? deepCloneArray(input) : deepCloneObject(input);
 }
 
-
-const deepCloneObject = object => {
+function deepCloneObject(object) {
 
 	const newObject = {};
 	const objectKeys = Object.keys(object);
 
-	objectKeys.forEach(key => {
+	objectKeys.forEach(function (key) {
 		const priorVal = object[key];
 		const newValue = copyValue(priorVal);
 		newObject[key] = newValue;
@@ -25,11 +24,11 @@ const deepCloneObject = object => {
 	return newObject;
 };
 
-const deepCloneArray = array => {
+function deepCloneArray(array) {
 
 	const newArray = [];
 
-	array.forEach(value => {
+	array.forEach(function (value) {
 		const newValue = copyValue(value);
 		newArray.push(newValue);
 	});
@@ -37,27 +36,28 @@ const deepCloneArray = array => {
 	return newArray;
 };
 
-const copyValue = priorVal => (validateNull(priorVal)
+function copyValue(priorVal) {
+	return (validateNull(priorVal))
 	? priorVal
 	:	(validateArray(priorVal))
 	? deepCloneArray(priorVal)
 	: (validateObject(priorVal))
 	? deepCloneObject(priorVal)
 	: priorVal
-);
+}
 
-const validateNull = input => (
-	input === null
-)
+function validateNull(input) {
+	return input === null
+}
 
-const validateObject = input => (
-	typeof input === "object"
-)
+function validateObject(input) {
+	return typeof input === "object"
+}
 
-const validateArray = input => (
-	Array.isArray(input)
-)
+function validateArray(input) {
+	return Array.isArray(input)
+}
 
-const validateInputForDeepClone = input => (
-	validateObject(input) || validateArray(input)
-);
+function validateInputForDeepClone(input) {
+	return validateObject(input) || validateArray(input)
+};
