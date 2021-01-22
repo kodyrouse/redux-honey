@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.4.2**
+- Fixed bug with `state.reset()` being unable to reset without options
+
 ### **6.4.1**
 - Removed unused dependencies
 

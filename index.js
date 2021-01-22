@@ -201,7 +201,7 @@ function createResetKey(stateKey) {
 }
 
 function createResetState(stateKey) {
-	return function (options) {
+	return function (options = {}) {
 
 		if (!store)
 			return handleStoreNotSetError(`state.reset() for ${stateKey}`);
