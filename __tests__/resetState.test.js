@@ -32,4 +32,12 @@ describe("state.reset() & state.resetKey() properly reset state", () => {
     testState.resetKey();
     expect(consoleSpy).toHaveBeenCalledTimes(2);
   });
+  
+  test("state.resetKey() with keepKeyValues", () => {
+    testState.set({ name: "Tom", age: 30 });
+    testState.reset({ keepKeyValues: ["name"] });
+    const { name, age } = testState.get();
+    expect(name).toBe("Tom");
+    expect(age).toBe(28);
+  })
 })
