@@ -206,7 +206,7 @@ function createResetState(stateKey) {
 		if (!store)
 			return handleStoreNotSetError(`state.reset() for ${stateKey}`);
 
-		const { keepKeyValues } = options;
+		const { keepKeyValues = [] } = options;
 
 		let newState = deepClone(initialStates[stateKey]);
 
