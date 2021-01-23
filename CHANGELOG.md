@@ -1,6 +1,9 @@
 
 # ChangeLog
 
+### **6.4.3**
+- Fixed bug with `state.reset()` keepKeyValues option
+
 ### **6.4.2**
 - Fixed bug with `state.reset()` being unable to reset without options
 
