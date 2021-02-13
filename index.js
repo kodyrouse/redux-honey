@@ -1,5 +1,6 @@
 import { createStore, combineReducers } from "redux";
 import deepClone from "./src/utils/deepClone";
+import shallowClone from "./src/utils/shallowClone";
 import log from "./src/utils/log";
 import nap from "./src/utils/nap";
 
@@ -14,10 +15,6 @@ const RESET_STORE = "__rootStore/__RESET_STORE";
 const defaultGetStateOptions = {
 	getItemIndex: false,
 	returnOriginal: false
-}
-
-const defaultResetStateOptions = {
-	keepKeyValues: []
 }
 
 function createHoneyPot(combinedState) {
@@ -44,8 +41,9 @@ function addHoney(stateKey, initialState) {
 	addInitialStateToInitialStates(stateKey, initialState);
 
 	return {
-		set: createSetState(stateKey),
 		get: createGetState(stateKey),
+		set: createSetState(stateKey),
+		update: createUpdateState(stateKey),
 		resetKey: createResetKey(stateKey),
 		reset: createResetState(stateKey),
 		__stateKey: stateKey,
@@ -132,13 +130,7 @@ function createSetState(stateKey) {
 			const invalidKeysInPayload = checkIfPayloadKeysExistInState(stateKey, payload);
 			if (invalidKeysInPayload.length) 
 				throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload contains keys [${invalidKeysInPayload}] that do not exist in the initialState for ${stateKey}. Payload keys are either misspelled or keys [${invalidKeysInPayload}] need to be added to the passed initialState when calling addHoney().`);
-
-			// if (createHoneyPotOptions.typeSafe) {
-			// 	const payloadTypeCheckErrors = typeCheckPayload(payload, statesTypeMap[stateKey]);
-			// 	if (payloadTypeCheckErrors.length)
-			// 		throw new Error(`Redux-Honey: \n Could not call state.set() for "${stateKey}". Given payload had the following typeSafe errors: \n ${payloadTypeCheckErrors}`);
-			// }
-
+				
 			store.dispatch({ type: stateKey, payload });
 
 		} catch(error) {
@@ -148,31 +140,29 @@ function createSetState(stateKey) {
 }
 
 function createGetState(stateKey) {
-	return function (string, options) {
+	return function (key, options) {
 
-		if (!store)
+		if (!store) {
 			return handleStoreNotSetError(`state.get() for ${stateKey}`);
+		}
 
 		try {
 
 			options = setGetStateOptions(options, stateKey);
 			let state = getRootStateItemByStateKey(stateKey);
-
-			if (!canGetNestedStatePiecesWithString(string))
+			
+			if (!canGetNestedStatePiecesWithString(key)) {
 				return state;
-
-			const keys = string.split(".");
-			let keychain = "";
-
-			keys.forEach(function (key) {
-
-				state = getStatePieceWithKey(state, key, options);
-				keychain += (keychain.length) ? `.${key}` : key;
-
-				if (typeof state === "undefined")
-					throw new Error(`Redux-Honey: \n Could not call state.get() for state "${stateKey}". Please ensure the string passed is a dot-separated string & the requested state ("${keychain}") does not exist on "${stateKey}"`);
-			});
-
+			}
+			
+			if (key) {
+				state = state[key];
+			}
+			
+			if (typeof state === "undefined") {
+				throw new Error(`Redux-Honey: \n Could not call state.get() for state "${stateKey}" - The given key ${key} returned undefined"`);
+			}
+		
 			return (options.returnOriginal)
 				? state
 				: deepClone(state);
@@ -180,6 +170,52 @@ function createGetState(stateKey) {
 			console.error(error);
 		}
 	}
+}
+
+function createUpdateState(stateKey) {
+	return function (keyString, updates) {
+		
+		if (!store) {
+			return handleStoreNotSetError(`state.get() for ${stateKey}`);
+		}
+		
+		try {
+			
+			// conversations.[id=3].interactions.[id=5]
+			let payload = getRootStateItemByStateKey(stateKey);
+			payload = updatePayloadChain(keyString.split('.'), shallowClone(payload[keys[0]]));
+			
+			// Once I get to the end of the keychain, I have to then take the "updates"
+			// The "updates" can be any value. it's up to the dev to not mess it up - I'm
+			// not going to do type checking for them as a safety measure
+			
+			store.dispatch({ type: stateKey, payload });
+		} catch(error) {
+			console.log(error);
+		}
+
+	}
+}
+
+function updatePayloadChain(keys, payload) {
+	let currentValue = payload;
+
+	keys.forEach(function (key, index) {
+		
+		// This is because the first key is already done
+		if (index === 0) return;
+
+		let clonedValue = getItemValueByKey(currentValue, key, options);
+		clonedValue = shallowClone(clonedValue);
+		currentValue = clonedValue;
+		keychain += (keychain.length) ? `.${key}` : key;
+
+		if (typeof state === "undefined") {
+			throw new Error(`Redux-Honey: \n Could not call state.update() for state "${stateKey}" - the given key "${key}" returned undefined. Please ensure the string passed is a dot-separated string & the state ("${keychain}") exists "${stateKey}"`);
+		}
+	});
+	
+	return currentValue;
 }
 
 function createResetKey(stateKey) {
@@ -320,10 +356,8 @@ function getRootStateItemByStateKey(stateKey) {
 	return store.getState()[stateKey]
 }
 
-function getStatePieceWithKey(state, key, options) {
-	return (keyIsPropertyOnArrayObject(key) && options.getItemIndex)
-	? getIndexOfArrayItem(state, key)
-	: keyIsPropertyOnArrayObject(key)
+function getItemValueByKey(state, key) {
+	return (keyIsPropertyOnArrayObject(key))
 	? getArrayItemByPropertyKey(state, key)
 	: (keyIsIndexForArrayItem(key))
 	? getArrayItemByIndex(state, key)
@@ -357,28 +391,32 @@ function getIndexOfArrayItem(state, key) {
 
 function getArrayItemByIndex(state, key) {
 
-	if (!Array.isArray(state))
+	if (!Array.isArray(state)) {
 		throw new Error("Could not get item from array - parent state piece is not an array");
+	}
 
-	if (isNaN(key.slice(1, -1)))
+	if (isNaN(key.slice(1, -1))) {
 		throw new Error(`Given index for array is not a number ${key.slice(1, -1)}. To get an item from an array by its index, please ensure you pass a number`);
+	}
 
 	const index = parseInt(key.slice(1, -1));
-	if (index < 0 || index >= state.length)
+	if (index < 0 || index >= state.length) {
 		throw new Error(`Given index ${index} is out of range. The array's length is ${state.length}`);
+	}
 
 	return state[index];
 }
 
 function getArrayItemByPropertyKey(state, key) {
 
-	if (!Array.isArray(state))
+	if (!Array.isArray(state)) {
 		throw new Error("Could not get item from array - parent state piece is not an array");
+	}
 
 	const { propertyKey, propertyValue } = getPropertyKeyAndValue(key);
 
 	return state.find(function (stateItem) {
-		return stateItem[propertyKey] == propertyValue
+		return stateItem[propertyKey] == propertyValue;
 	});
 }
 

@@ -34,11 +34,11 @@ describe("state.set properly sets values", () => {
   });
   
   test("state.set properly sets object values", () => {
-    expect(testState.get("aboutMe.isTall")).toBe(false);
+    expect(testState.get("aboutMe").isTall).toBe(false);
     const aboutMe = testState.get("aboutMe");
     aboutMe.isTall = true;
     testState.set({ aboutMe });
-    expect(testState.get("aboutMe.isTall")).toBe(true);
+    expect(testState.get("aboutMe").isTall).toBe(true);
   });
   
   test("state.set logs error for keys that do not exist on initialState", () => {
